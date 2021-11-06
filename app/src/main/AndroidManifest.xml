@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.tptdl">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,6 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TPTDL">
+        <activity
+            android:name=".settingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".levelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".mapActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

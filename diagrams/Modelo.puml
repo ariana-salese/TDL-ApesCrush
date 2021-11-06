@@ -1,0 +1,80 @@
+@startuml
+class Movements {
+-remainingMovements
+}
+interface Fruta
+class Weather {
++fetchCurrent()
+}
+interface WeatherState {
+}
+
+class Heat
+class Wind
+class Storm
+class Cold
+class Normal
+
+class Score {
+- goal
+}
+
+class Banana {
+- value
+}
+class Manzana {
+-value
+}
+class Frutilla {
+-value
+}
+class Durazno {
+-value
+}
+class Uvas {
+-value
+}
+
+class Grilla
+
+interface Token
+
+class Bomba {
+    - radioExplosion
+    +destroyitself()
+}
+
+Fruta -up-|> Token
+Bomba -up-|> Token
+
+Banana .up.|> Fruta
+Manzana .up.|> Fruta
+Frutilla .up.|> Fruta
+Durazno .up.|> Fruta
+Uvas .up.|> Fruta
+
+Heat .up.|> WeatherState
+Storm .up.|> WeatherState
+Wind .up.|> WeatherState
+Normal .up.|> WeatherState
+Cold .up.|> WeatherState
+
+class ActivityMenu
+class ActivityLevel
+class ActivitySettings
+class ActivityMap
+
+
+ActivityMenu "1"..>"1" Weather
+ActivityLevel "1"..>"1" Grilla
+ActivityLevel "1"<..>"1" Score
+ActivityLevel "1"<..>"1" Movements
+
+Grilla "1" --> "81" Token
+
+ActivityMenu ..> ActivityMap
+ActivityMenu  ..> ActivitySettings
+ActivityMap ..> ActivityLevel
+
+Weather --> WeatherState
+@enduml
