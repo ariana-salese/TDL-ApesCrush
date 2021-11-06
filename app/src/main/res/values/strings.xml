@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TPTDL</string>
+    <string name="mapa">Mapa</string>
+    <string name="settings">Settings</string>
+    <string name="continuar">Continuar</string>
+    <string name="apes_crush">Apes Crush</string>
 </resources>

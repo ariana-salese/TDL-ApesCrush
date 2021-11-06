@@ -1,5 +1,7 @@
 package com.example.tptdl.weatherAPI
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.URL
 
@@ -10,26 +12,26 @@ class Weather {
     private val APIKey: String = "cbe981f9e01863b0333a6fdbc475784f"
 
     //Obtains weather data from API (https://openweathermap.org)
-    private fun getWeatherData(): String {
+    private suspend fun getWeatherData(): String {
 
-        val response:String = try {
-            URL("https://api.openweathermap.org/data/2.5/weather?id=$cityID&units=metric&appid=$APIKey").readText(Charsets.UTF_8)
-        } catch (e: Exception) {
-            println(e)
-            ""
+        var response = ""
+
+        withContext(Dispatchers.IO) {
+            runCatching{
+                 response = URL("https://api.openweathermap.org/data/2.5/weather?id=$cityID&units=metric&appid=$APIKey").readText(Charsets.UTF_8)
+            }.onFailure { println("Something wrong happened: ${it.message}") }
         }
-        //println(response)
         return response
     }
 
     //Obtains only important values from JSON
-    private fun cleanWeatherData(weatherData: String): MutableMap<String, Any>? {
+    private fun cleanWeatherData(weatherData: String): MutableMap<String, String>? {
 
         if (weatherData == "") {
             return null
         }
 
-        var cleanWeatherData: MutableMap<String, Any> = mutableMapOf()
+        val cleanWeatherData: MutableMap<String, String> = mutableMapOf()
 
         val jsonObj = JSONObject(weatherData)
 
@@ -37,22 +39,29 @@ class Weather {
         val main = jsonObj.getJSONObject("main")
         val wind = jsonObj.getJSONObject("wind")
 
-        cleanWeatherData["temperature"] = main.getString("temp").toFloat()
-        cleanWeatherData["rain"] = weather.getString("main") == "Rain"
-        cleanWeatherData["windSpeed_M/S"] = wind.getString("speed").toFloat()
+        cleanWeatherData["temperature"] = main.getString("temp")
+        cleanWeatherData["rain"] = weather.getString("main")
+        cleanWeatherData["windSpeed"] = wind.getString("speed")
 
-        //println(cleanWeatherData)
+        println(cleanWeatherData)
 
         return cleanWeatherData
     }
 
-    fun fetchCurrentWeather(): WeatherState {
+    suspend fun fetchCurrent(): WeatherState {
 
         val cleanWeatherData = this.cleanWeatherData(this.getWeatherData()) ?: return Normal()
 
-        //TODO devolver weatherState segun data
+        //Prioridades: Lluvia, Calor, Frio, Viento
 
-        return Normal()
+        if (cleanWeatherData.get("rain") == "Rain") return Rainy()
+
+        if (cleanWeatherData.get("temperature")?.toFloat() ?: 0f > 25) return Hot()
+
+        if (cleanWeatherData.get("temperature")?.toFloat() ?: 0f < 15) return Cold()
+
+        if (cleanWeatherData.get("windSpeed")?.toFloat() ?: 0f > 14) return Windy()
+
+        return Normal() //TODO agregar constantes
     }
-
 }
