@@ -24,4 +24,8 @@ class Line(val lenght : Int) {
         return myCells[index]
     }
 
+    fun setValueAtIndex(newValue : Cell, index : Int) {
+        myCells[index] = newValue
+    }
+
 }
