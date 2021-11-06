@@ -18,7 +18,7 @@ class GameBoard(val width : Int, val height : Int) {
         }
     }
 
-    /* Function will receive a pair (obtained by view controllers) composed of the x and y coordinates
+    /* Function will receive a Pair (obtained by view controllers) composed of the x and y coordinates
        of the cell to move, and a direction (also obtained by view controllers) in which to move the selected cell.
        Function will also receive the direction ("Left", "Right, "Up", "Down") in which the cell should
        be moved as a string.
@@ -40,15 +40,15 @@ class GameBoard(val width : Int, val height : Int) {
     }
 
     // Switches the position of 2 cells in the GameBoard (Doesn't accept invalid switches).
-    // FUNTION STILL NEEDS TO BE TESTED
+    // FUNCTION STILL NEEDS TO BE TESTED
     private fun switchCells(selectedCellCoords: Pair<Int, Int>, cellToSwitchCoords: Pair<Int, Int>) {
         val (xSelected, ySelected) = selectedCellCoords
         val (xToSwitch, yToSwitch) = cellToSwitchCoords
         val selectedCell = obtainCell(selectedCellCoords)
         val cellToSwitch = obtainCell(cellToSwitchCoords)
 
-        myColumns[xSelected].setValueAtIndex(cellToSwitch ,ySelected)
-        myColumns[xToSwitch].setValueAtIndex(selectedCell ,yToSwitch)
+        myColumns[xSelected].setValueAtIndex(cellToSwitch, ySelected)
+        myColumns[xToSwitch].setValueAtIndex(selectedCell, yToSwitch)
     }
 
     // Checks if a movement would end up in an out of bounds scenario and returns a boolean.
