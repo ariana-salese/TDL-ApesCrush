@@ -3,7 +3,7 @@ package com.example.tptdl.gamelogic.gameboard
 import java.lang.Exception
 
 class GameBoard(val width : Int, val height : Int) {
-    var myColumns : MutableList<Line> = mutableListOf()
+    private var myColumns : MutableList<Line> = mutableListOf()
 
     init {
         for (i in 1..width)
@@ -57,13 +57,14 @@ class GameBoard(val width : Int, val height : Int) {
         return !((x == 0 && (direction == "Left")) || (x == width && (direction == "Right")) || (y == 0 && (direction == "Up")) || (y == height && (direction == "Down"))) // checks for all out of bound possibilities
     }
 
-    /* After the controller has called the funtion moveCell(), it will call checkForCombos() if
-        checkForCombos finds any combos, it will execute them.
+    /* After the controller has called the function moveCell(), it will call checkForCombos() if
+       checkForCombos finds any combos, it will execute them.
      */
     fun checkForCombos() { // to be implemented
     }
 
-    // In this case, the x axis represents the horizontal axis of the board, y represents the vertical one.
+    // In this case, the x axis represents the horizontal axis of the board (starting from the
+    // leftmost cell), y axis represents the vertical one (starting from the topmost cell).
     fun obtainCell(cellToObtain: Pair<Int, Int>): Cell {
         val (x, y) = cellToObtain
         return myColumns[x].getValueAtIndex(y)
