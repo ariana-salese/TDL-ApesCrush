@@ -12,8 +12,8 @@ class GameBoard(val width : Int, val height : Int) {
 
     fun printBoard() {
         for (i in 0 until height) {
-            for (j in 0 until height)
-                print((((myColumns[i]).getValueAtIndex(j)).getCellValue()).toString() + " | ")
+            for (j in 0 until width)
+                print((((myColumns[j]).getValueAtIndex(i)).getCellValue()).toString() + " | ")
             print("\n")
         }
     }
@@ -32,8 +32,8 @@ class GameBoard(val width : Int, val height : Int) {
         when {
             (direction == "Left") -> { cellToSwitch = Pair(x-1, y) }
             (direction == "Right") -> { cellToSwitch = Pair(x+1, y) }
-            (direction == "Up") -> { cellToSwitch = Pair(x, y+1) }
-            (direction == "Down") -> { cellToSwitch = Pair(x, y-1) }
+            (direction == "Up") -> { cellToSwitch = Pair(x, y-1) }
+            (direction == "Down") -> { cellToSwitch = Pair(x, y+1) }
             else -> throw Exception("Invalid direction")
         }
         switchCells(cellToMove, cellToSwitch)
