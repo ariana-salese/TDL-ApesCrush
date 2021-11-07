@@ -3,7 +3,7 @@ package com.example.tptdl.gamelogic.tokens
 class TokenRandomizer {
     private val allTokens : MutableList<Token> = mutableListOf()
     private val allFruits : MutableList<Fruit> = mutableListOf()
-    private val numberOfTokens : Int = 6
+    private val numberOfTokens : Int = 6    // Void() Token is excluded from this, in fact, it's excluded from this whole class
     private val numberOfFruits : Int = 5
     private val bombAppearanceRate : Int = 5    // expressed in percentages (0 to 100)
 

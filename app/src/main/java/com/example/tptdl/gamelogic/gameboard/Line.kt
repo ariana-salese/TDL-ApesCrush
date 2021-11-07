@@ -3,7 +3,7 @@ package com.example.tptdl.gamelogic.gameboard
 import com.example.tptdl.gamelogic.tokens.TokenRandomizer
 
 class Line(val lenght : Int) {
-    val myCells : MutableList<Cell> = mutableListOf()
+    private val myCells : MutableList<Cell> = mutableListOf()
 
     init {
         val randomizer = TokenRandomizer()

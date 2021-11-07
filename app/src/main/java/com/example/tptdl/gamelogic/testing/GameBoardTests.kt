@@ -2,6 +2,7 @@ package com.example.tptdl.gamelogic.testing
 
 import com.example.tptdl.gamelogic.gameboard.GameBoard
 import com.example.tptdl.gamelogic.gameboard.Line
+import com.example.tptdl.gamelogic.tokens.Void
 import com.example.tptdl.gamelogic.tokens.TokenRandomizer
 
 fun test01ValuesAreProperlyAssigned() {
@@ -48,12 +49,28 @@ fun test05gameBoardSwitchTest() {
         println("Success")
 }
 
+fun test06boardRemovalDisplayTest() {
+    println("---------- Test 06 ----------")
+    val board = GameBoard(9, 9)
+    println("Board before deletion:")
+    board.printBoard()
+    val cellToRemove = board.obtainCell(Pair(0, 0))
+    cellToRemove.emptyCell()
+    for (i in 0 until 9) { board.obtainCell(Pair(4, i)).emptyCell() }
+    println("Board after deletion:")
+    board.printBoard()
+    board.repopulateBoardTESTING()
+    println("Board after repopulating:")
+    board.printBoard()
+}
+
 fun main() {
     test01ValuesAreProperlyAssigned()
     test02tokenRandomizerTest()
     test03lineDisplayTest()
     test04boardDisplayTest()
     test05gameBoardSwitchTest()
+    test06boardRemovalDisplayTest()
 }
 
 

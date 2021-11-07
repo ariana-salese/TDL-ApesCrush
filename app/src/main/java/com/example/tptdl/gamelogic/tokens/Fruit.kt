@@ -1,4 +1,7 @@
 package com.example.tptdl.gamelogic.tokens
 
-interface Fruit : Token {
+abstract class Fruit : Token() {
+    override fun toString(): String {
+        return "GenericFruit"
+    }
 }

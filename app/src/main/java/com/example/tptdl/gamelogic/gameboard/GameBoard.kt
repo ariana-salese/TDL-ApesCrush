@@ -1,5 +1,6 @@
 package com.example.tptdl.gamelogic.gameboard
 
+import com.example.tptdl.gamelogic.tokens.Token
 import java.lang.Exception
 
 class GameBoard(val width : Int, val height : Int) {
@@ -19,9 +20,9 @@ class GameBoard(val width : Int, val height : Int) {
     }
 
     /* Function will receive a Pair (obtained by view controllers) composed of the x and y coordinates
-       of the cell to move, and a direction (also obtained by view controllers) in which to move the selected cell.
-       Function will also receive the direction ("Left", "Right, "Up", "Down") in which the cell should
-       be moved as a string.
+       of the cell to move, and a direction (also obtained by view controllers) in which to move the
+       selected cell. Function will also receive the previously mentioned direction ("Left", "Right,
+       "Up", "Down") in which the cell should be moved as a string.
     */
     fun moveCell(cellToMove : Pair<Int, Int>, direction : String) {
         if (!checkIfMoveIsValid(cellToMove, direction))
@@ -40,7 +41,6 @@ class GameBoard(val width : Int, val height : Int) {
     }
 
     // Switches the position of 2 cells in the GameBoard (Doesn't accept invalid switches).
-    // FUNCTION STILL NEEDS TO BE TESTED
     private fun switchCells(selectedCellCoords: Pair<Int, Int>, cellToSwitchCoords: Pair<Int, Int>) {
         val (xSelected, ySelected) = selectedCellCoords
         val (xToSwitch, yToSwitch) = cellToSwitchCoords
@@ -58,9 +58,43 @@ class GameBoard(val width : Int, val height : Int) {
     }
 
     /* After the controller has called the function moveCell(), it will call checkForCombos() if
-       checkForCombos finds any combos, it will execute them.
+       checkForCombos finds any combos, it will execute them leaving Void in the spots where there
+       was a combo.
      */
-    fun checkForCombos() { // to be implemented
+    private fun checkForCombos() {
+        val markedForRemoval : MutableList<Cell> = mutableListOf()
+        val alreadyCheckedCells : MutableList<Cell> = mutableListOf()
+
+        for (i in 0 until height) {
+            for (j in 0 until width) {
+                val currentCell = myColumns[j].getValueAtIndex(i)
+                if (!alreadyCheckedCells.contains(currentCell)) {
+                    when {  // missing implementation
+                        (j == 0) -> {} // cant have an adjacent equal to the left
+                        (j == width - 1) -> {} // cant have an adjacent equal to the right
+                        (i == 0) -> {} // cant have an adjacent equal above
+                        (i == height - 1) -> {} // cant have an adjacent equal below
+                        else -> {} // inner part of the board, can have adjacents in all 4 directions
+                    }
+                }
+            }
+        }
+        markedForRemoval.forEach { it.emptyCell() }
+        this.repopulateBoard()
+    }
+
+    /* Function will go through every cell of the board, whenever it finds a cell with a Void value,
+    it will replace it with a random token. After it's done, it'll call checkForCombos(), since the
+    newly placed tokens may have left the board in a state where combos are available
+     */
+    private fun repopulateBoard() {
+        for (i in 0 until height) {
+            for (j in 0 until width) {
+                val currentCell = myColumns[j].getValueAtIndex(i)
+                if (currentCell.isEmpty()) currentCell.generateRandomValue()
+            }
+        }
+        //this.checkForCombos() // uncomment when checkForCombos() is properly implemented
     }
 
     // In this case, the x axis represents the horizontal axis of the board (starting from the
@@ -68,5 +102,9 @@ class GameBoard(val width : Int, val height : Int) {
     fun obtainCell(cellToObtain: Pair<Int, Int>): Cell {
         val (x, y) = cellToObtain
         return myColumns[x].getValueAtIndex(y)
+    }
+
+    fun repopulateBoardTESTING() {  // public funtion to test repopulateBoard()
+        this.repopulateBoard()
     }
 }
