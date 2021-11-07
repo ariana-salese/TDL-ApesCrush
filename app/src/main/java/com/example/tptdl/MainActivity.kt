@@ -18,7 +18,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var map: mapActivity
     private lateinit var level: levelActivity
     private lateinit var settings: settingsActivity
+
     // Contains all the views
+    //TODO poner bien las bindings para acceder a las views
     //private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,4 +61,46 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Called when the user navigates away from the app but might come back
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+    }
+
+    /** Lifecycle Methods **/
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+
+    }
 }
+
