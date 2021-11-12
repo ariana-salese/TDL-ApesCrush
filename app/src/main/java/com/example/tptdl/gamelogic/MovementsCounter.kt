@@ -8,4 +8,8 @@ class MovementsCounter(var remainingMovements : Int = 0) {
     fun executeMovement() {
         this.remainingMovements--
     }
+
+    fun undoMovement() {
+        this.remainingMovements++
+    }
 }

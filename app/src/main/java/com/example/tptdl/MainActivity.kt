@@ -1,16 +1,15 @@
 package com.example.tptdl
 
-import androidx.appcompat.app.AppCompatActivity
+//import kotlinx.coroutines.Dispatchers
+//import kotlinx.coroutines.GlobalScope
+//import kotlinx.coroutines.launch
+
+//import kotlinx.coroutines.runBlocking
+
 import android.os.Bundle
-import com.example.tptdl.gamelogic.gameboard.GameBoard
-import com.example.tptdl.weatherAPI.Weather
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-
-import kotlinx.coroutines.runBlocking
-
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import com.example.tptdl.weatherAPI.Weather
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,9 +28,9 @@ class MainActivity : AppCompatActivity() {
 
         val weather =  Weather()
 
-        GlobalScope.launch{
+        /*GlobalScope.launch{
             println(weather.fetchCurrent())
-        }
+        }*/
 
         //TODO implementarlo con corutinas
 

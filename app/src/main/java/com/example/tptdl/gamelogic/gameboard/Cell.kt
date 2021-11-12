@@ -1,5 +1,6 @@
 package com.example.tptdl.gamelogic.gameboard
 
+import com.example.tptdl.gamelogic.Score
 import com.example.tptdl.gamelogic.tokens.Token
 import com.example.tptdl.gamelogic.tokens.TokenRandomizer
 import com.example.tptdl.gamelogic.tokens.Void
@@ -15,7 +16,7 @@ class Cell(var value : Token) {
     }
 
     fun generateRandomValue() {
-        value = TokenRandomizer().randomToken()
+        value = TokenRandomizer(5).randomToken()
     }
 
     fun isEmpty(): Boolean {
@@ -28,5 +29,20 @@ class Cell(var value : Token) {
 
     fun isEqual(cell : Cell) : Boolean {
         return value.isEqual(cell.getCellValue())
+    }
+
+    fun isExplosive(): Boolean {
+        return value.isExplosive()
+    }
+
+    fun explode(cellCoords: Pair<Int, Int>, gameBoard: GameBoard) {
+        if (!value.isExplosive())
+            return
+        value.explode(cellCoords, gameBoard)
+    }
+
+    fun pop(score: Score) {
+        value.pop(score)
+        this.emptyCell()
     }
 }

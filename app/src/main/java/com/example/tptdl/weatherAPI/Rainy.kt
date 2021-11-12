@@ -1,6 +1,6 @@
 package com.example.tptdl.weatherAPI
 
-class Rainy : WeatherState {
+class Rainy : WeatherState() {
 
     override fun toString() : String {
         return "Rainy"
