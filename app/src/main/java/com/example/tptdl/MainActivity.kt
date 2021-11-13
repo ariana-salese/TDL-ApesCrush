@@ -6,11 +6,13 @@ package com.example.tptdl
 
 //import kotlinx.coroutines.runBlocking
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tptdl.weatherAPI.Weather
-
+//import androidx.databinding.DataBindingUtil
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,25 +43,24 @@ class MainActivity : AppCompatActivity() {
 
         val mapButton: Button = findViewById(R.id.map_button)
         mapButton.setOnClickListener {
-            map = mapActivity()
-            setContentView(R.layout.activity_map)
+            val intent = Intent(this, mapActivity::class.java)
+            startActivity(intent)
         }
 
         val settingsButton: Button = findViewById(R.id.settings_button)
         settingsButton.setOnClickListener {
-            settings = settingsActivity()
-            setContentView(R.layout.activity_settings)
-        }
-
-        val continueButton: Button = findViewById(R.id.continue_button)
-        continueButton.setOnClickListener {
-            level = levelActivity()
-            setContentView(R.layout.activity_level)
+            val intent = Intent(this, settingsActivity::class.java)
+            startActivity(intent)
         }
 
 
     }
 
+
+
+    fun clickOnLevelButton(view: View) {
+        println(view.id)
+    }
     /**
      * Called when the user navigates away from the app but might come back
      */
@@ -75,31 +76,33 @@ class MainActivity : AppCompatActivity() {
     /** Lifecycle Methods **/
     override fun onStart() {
         super.onStart()
+        println("START MAIN")
     }
 
     override fun onResume() {
         super.onResume()
-
+        println("RESUME MAIN")
     }
 
     override fun onPause() {
         super.onPause()
-
+        println("PAUSE MAIN")
     }
 
     override fun onStop() {
         super.onStop()
-
+        println("STOP MAIN")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
+        println("DESTROY MAIN")
     }
 
     override fun onRestart() {
         super.onRestart()
-
+        println("RESTART MAIN")
     }
+
 }
 
