@@ -1,14 +1,29 @@
 package com.example.tptdl
 
+import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 
 class MapActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
+
+        val background: ImageView = findViewById(R.id.backgroundImage)
+
+        if (false) { //WeatherState.isRainy()
+            background.setImageResource(R.drawable.ic_map_rainy)
+        } else if (false) { //WeatherState.isHot()
+            background.setImageResource(R.drawable.ic_map_hot)
+        } else if (false) { //WeatherState.isCold() //TODO
+            background.setImageResource(R.drawable.ic_map_cold)
+        } //else if (true) { //WeatherState.isWindy()
+          //  background.setImageResource(R.drawable.ic_map_windy)
+        //} TODO Ari, agragar mapa windy
+        //TODO hacer no clickeables los niveles no disponibles y bajarles opacidad
 
     }
     fun clickOnLevelButton(view: View) {

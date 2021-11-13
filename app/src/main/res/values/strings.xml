@@ -15,4 +15,14 @@
     <string name="textLevelNumber4">4</string>
     <string name="textLevelNumber5">5</string>
     <string name="levelNumber1">1</string>
+    <string name="textLevelNumber6">6</string>
+    <string name="textLevelNumber7">7</string>
+    <string name="textLevelNumber8">8</string>
+    <string name="textLevelNumber9">9</string>
+    <string name="textLevelNumber10">10</string>
+    <string name="levelNumber10">10</string>
+    <string name="levelNumber9">9</string>
+    <string name="levelNumber8">8</string>
+    <string name="levelNumber7">7</string>
+    <string name="levelNumber6">6</string>
 </resources>
