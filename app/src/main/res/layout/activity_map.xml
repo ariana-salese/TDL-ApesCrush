@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_mapa_juego" />
+        app:srcCompat="@drawable/ic_map_normal" />
 
     <ImageButton
         android:id="@+id/buttonLevel1"
