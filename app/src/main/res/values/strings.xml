@@ -5,4 +5,14 @@
     <string name="continuar">Continuar</string>
     <string name="apes_crush">Apes Crush</string>
     <string name="musica">Musica</string>
+    <string name="levelNumber5">5</string>
+    <string name="levelNumber4">4</string>
+    <string name="levelNumber3">3</string>
+    <string name="levelNumber2">2</string>
+    <string name="textLevelNumber1">1</string>
+    <string name="textLevelNumber2">2</string>
+    <string name="textLevelNumber3">3</string>
+    <string name="textLevelNumber4">4</string>
+    <string name="textLevelNumber5">5</string>
+    <string name="levelNumber1">1</string>
 </resources>

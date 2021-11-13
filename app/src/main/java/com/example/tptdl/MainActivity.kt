@@ -16,9 +16,9 @@ import com.example.tptdl.weatherAPI.Weather
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var map: mapActivity
-    private lateinit var level: levelActivity
-    private lateinit var settings: settingsActivity
+    private lateinit var map: MapActivity
+    private lateinit var level: LevelActivity
+    private lateinit var settings: SettingsActivity
 
     // Contains all the views
     //TODO poner bien las bindings para acceder a las views
@@ -43,13 +43,13 @@ class MainActivity : AppCompatActivity() {
 
         val mapButton: Button = findViewById(R.id.map_button)
         mapButton.setOnClickListener {
-            val intent = Intent(this, mapActivity::class.java)
+            val intent = Intent(this, MapActivity::class.java)
             startActivity(intent)
         }
 
         val settingsButton: Button = findViewById(R.id.settings_button)
         settingsButton.setOnClickListener {
-            val intent = Intent(this, settingsActivity::class.java)
+            val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
 

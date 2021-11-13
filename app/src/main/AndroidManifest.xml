@@ -12,13 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TPTDL">
         <activity
-            android:name=".settingsActivity"
+            android:name=".SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".levelActivity"
+            android:name=".LevelActivity"
             android:exported="false" />
         <activity
-            android:name=".mapActivity"
+            android:name=".MapActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
