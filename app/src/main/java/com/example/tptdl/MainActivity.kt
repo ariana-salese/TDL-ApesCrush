@@ -6,11 +6,12 @@ package com.example.tptdl
 
 //import kotlinx.coroutines.runBlocking
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tptdl.weatherAPI.Weather
 //import androidx.databinding.DataBindingUtil
@@ -31,6 +32,11 @@ class MainActivity : AppCompatActivity() {
 
         val weather =  Weather()
 
+        askForPermissions()
+
+        val intent_act = Intent(this, WeatherService::class.java)
+        startService(intent_act)
+
         /*GlobalScope.launch{
             println(weather.fetchCurrent())
         }*/
@@ -39,8 +45,6 @@ class MainActivity : AppCompatActivity() {
 
         //val gameBoard: GameBoard = GameBoard(3,3)
         //gameBoard.printBoard()
-
-
 
         val mapButton: Button = findViewById(R.id.map_button)
         mapButton.setOnClickListener {
@@ -53,8 +57,28 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
+    }
 
+    private fun askForPermissions(){
 
+        val locationPermissionRequest = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            when {
+                permissions.getOrDefault(Manifest.permission.ACCESS_BACKGROUND_LOCATION, false) -> {
+                    println("Background permission granted")
+                }
+                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                    println("Coarse permission granted")
+                } else -> {
+                println("No permission granted")
+            }
+            }
+        }
+
+        locationPermissionRequest.launch(arrayOf(
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION))
     }
 
     fun clickOnLevelButton(view: View) {
