@@ -1,5 +1,6 @@
 package com.example.tptdl.weatherAPI
 
+import android.location.Location
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -12,13 +13,14 @@ class Weather {
     private val APIKey: String = "cbe981f9e01863b0333a6fdbc475784f"
 
     //Obtains weather data from API (https://openweathermap.org)
-    private suspend fun getWeatherData(): String {
+    private suspend fun getWeatherData(location: Location): String {
 
         var response = ""
 
         withContext(Dispatchers.IO) {
             runCatching{
-                 response = URL("https://api.openweathermap.org/data/2.5/weather?id=$cityID&units=metric&appid=$APIKey").readText(Charsets.UTF_8)
+                response = URL("https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&units=metric&appid=$APIKey").readText(Charsets.UTF_8)
+                //response = URL("https://api.openweathermap.org/data/2.5/weather?id=$cityID&units=metric&appid=$APIKey").readText(Charsets.UTF_8)
             }.onFailure { println("Something wrong happened: ${it.message}") }
         }
         return response
@@ -48,9 +50,11 @@ class Weather {
         return cleanWeatherData
     }
 
-    suspend fun fetchCurrent(): WeatherState {
+    suspend fun fetchCurrent(location : Location?): WeatherState {
 
-        val cleanWeatherData = this.cleanWeatherData(this.getWeatherData()) ?: return Normal()
+        if (location == null) return Normal()
+
+        val cleanWeatherData = this.cleanWeatherData(this.getWeatherData(location)) ?: return Normal()
 
         //Prioridades: Lluvia, Calor, Frio, Viento
 
