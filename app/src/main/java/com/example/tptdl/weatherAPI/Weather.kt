@@ -64,7 +64,7 @@ class Weather {
 
         if (cleanWeatherData.get("temperature")?.toFloat() ?: 0f < 15) return Cold()
 
-        if (cleanWeatherData.get("windSpeed")?.toFloat() ?: 0f > 14) return Windy()
+        if (cleanWeatherData.get("windSpeed")?.toFloat() ?: 0f > 10) return Windy()
 
         return Normal() //TODO agregar constantes
     }

@@ -73,7 +73,7 @@ class WeatherService : Service() {
 
         return try{
             Tasks.await(fusedLocationClient.lastLocation)
-            null
+            null // Esto hace que no se pueda usar la ubicación guardada en el caché, y siempre se actualize (Luego lo sacamos)
         } catch (e: SecurityException){
             println("No permissions - last location")
             null
@@ -88,7 +88,7 @@ class WeatherService : Service() {
         val cancellationSource = CancellationTokenSource()
 
         return try{
-            Tasks.await(fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY,cancellationSource.token))
+            Tasks.await(fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY,cancellationSource.token))
         } catch (e: SecurityException){
             println("No permissions - current location")
             null
@@ -101,7 +101,7 @@ class WeatherService : Service() {
     private fun checkForPermissions() : Boolean{
         if (ActivityCompat.checkSelfPermission(
                 baseContext,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 baseContext,
                 Manifest.permission.ACCESS_COARSE_LOCATION
