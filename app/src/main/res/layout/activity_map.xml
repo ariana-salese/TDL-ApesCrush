@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MapActivity">
 
-
     <ImageView
         android:id="@+id/backgroundImage"
         android:layout_width="wrap_content"
@@ -25,16 +24,16 @@
         android:layout_width="75dp"
         android:layout_height="68dp"
         android:backgroundTint="#00FFFFFF"
-        android:onClick="clickOnLevelButton"
         android:contentDescription="@string/levelNumber1"
+        android:onClick="clickOnLevelButton"
         android:scaleType="fitXY"
         android:src="@drawable/ic_boton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintHorizontal_bias="0.627"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/backgroundImage"
-        app:layout_constraintVertical_bias="0.962" />
+        app:layout_constraintVertical_bias="0.927" />
 
     <ImageButton
         android:id="@+id/buttonLevel2"
@@ -180,7 +179,9 @@
         app:layout_constraintTop_toTopOf="@+id/backgroundImage"
         app:layout_constraintVertical_bias="0.069" />
 
+
     <TextView
+        android:id="@+id/buttonTextLevel1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -188,10 +189,13 @@
         android:text="@string/textLevelNumber1"
         app:layout_constraintBottom_toBottomOf="@+id/buttonLevel1"
         app:layout_constraintEnd_toEndOf="@+id/buttonLevel1"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="@+id/buttonLevel1"
-        app:layout_constraintTop_toTopOf="@+id/buttonLevel1" />
+        app:layout_constraintTop_toTopOf="@+id/buttonLevel1"
+        app:layout_constraintVertical_bias="0.489" />
 
     <TextView
+        android:id="@+id/buttonTextLevel2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -203,6 +207,7 @@
         app:layout_constraintTop_toTopOf="@+id/buttonLevel2" />
 
     <TextView
+        android:id="@+id/buttonTextLevel3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -214,6 +219,7 @@
         app:layout_constraintTop_toTopOf="@+id/buttonLevel3" />
 
     <TextView
+        android:id="@+id/buttonTextLevel4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -225,6 +231,7 @@
         app:layout_constraintTop_toTopOf="@+id/buttonLevel4" />
 
     <TextView
+        android:id="@+id/buttonTextLevel5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -236,6 +243,7 @@
         app:layout_constraintTop_toTopOf="@+id/buttonLevel5" />
 
     <TextView
+        android:id="@+id/buttonTextLevel6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -247,6 +255,7 @@
         app:layout_constraintTop_toTopOf="@+id/buttonLevel6" />
 
     <TextView
+        android:id="@+id/buttonTextLevel7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -258,6 +267,7 @@
         app:layout_constraintTop_toTopOf="@+id/buttonLevel7" />
 
     <TextView
+        android:id="@+id/buttonTextLevel8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -269,6 +279,7 @@
         app:layout_constraintTop_toTopOf="@+id/buttonLevel8" />
 
     <TextView
+        android:id="@+id/buttonTextLevel9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -280,6 +291,7 @@
         app:layout_constraintTop_toTopOf="@+id/buttonLevel9" />
 
     <TextView
+        android:id="@+id/buttonTextLevel10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -289,5 +301,35 @@
         app:layout_constraintEnd_toEndOf="@+id/buttonLevel10"
         app:layout_constraintStart_toStartOf="@+id/buttonLevel10"
         app:layout_constraintTop_toTopOf="@+id/buttonLevel10" />
+
+    <ImageButton
+        android:id="@+id/imageButton3"
+        android:layout_width="105dp"
+        android:layout_height="33dp"
+        android:backgroundTint="#92FAFAFA"
+        android:onClick="upMap"
+        android:tint="#000000"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundImage"
+        app:layout_constraintStart_toStartOf="@+id/backgroundImage"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImage"
+        app:layout_constraintVertical_bias="0.018"
+        app:srcCompat="@android:drawable/arrow_up_float" />
+
+    <ImageButton
+        android:id="@+id/downMapButton"
+        android:layout_width="105dp"
+        android:layout_height="32dp"
+        android:backgroundTint="#88FFFFFF"
+        android:onClick="downMap"
+        android:tint="#252525"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImage"
+        app:layout_constraintVertical_bias="0.977"
+        app:srcCompat="@android:drawable/arrow_down_float" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
