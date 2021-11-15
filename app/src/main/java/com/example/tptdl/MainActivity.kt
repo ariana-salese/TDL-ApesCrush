@@ -8,9 +8,11 @@ package com.example.tptdl
 
 import android.Manifest
 import android.content.Intent
+import android.media.Image
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tptdl.weatherAPI.Weather
@@ -52,7 +54,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val settingsButton: Button = findViewById(R.id.settings_button)
+        val settingsButton: ImageButton = findViewById(R.id.settings_button)
         settingsButton.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)

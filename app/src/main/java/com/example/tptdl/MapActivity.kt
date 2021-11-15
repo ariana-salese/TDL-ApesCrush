@@ -23,7 +23,7 @@ class MapActivity : AppCompatActivity() {
 
         val background: ImageView = findViewById(R.id.backgroundImage)
 
-        if (true) { //WeatherState.isRainy()
+        if (false) { //WeatherState.isRainy()
             background.setImageResource(R.drawable.ic_map_rainy)
         } else if (false) { //WeatherState.isHot()
             background.setImageResource(R.drawable.ic_map_hot)
@@ -31,32 +31,13 @@ class MapActivity : AppCompatActivity() {
             background.setImageResource(R.drawable.ic_map_cold)
         } //else if (true) { //WeatherState.isWindy()
           //  background.setImageResource(R.drawable.ic_map_windy)
+
         //} TODO Ari, agragar mapa windy
-        //TODO hacer no clickeables los niveles no disponibles y bajarles opacidad
 
-        levelTexts.add(findViewById(R.id.buttonTextLevel1))
-        levelTexts.add(findViewById(R.id.buttonTextLevel2))
-        levelTexts.add(findViewById(R.id.buttonTextLevel3))
-        levelTexts.add(findViewById(R.id.buttonTextLevel4))
-        levelTexts.add(findViewById(R.id.buttonTextLevel5))
-        levelTexts.add(findViewById(R.id.buttonTextLevel6))
-        levelTexts.add(findViewById(R.id.buttonTextLevel7))
-        levelTexts.add(findViewById(R.id.buttonTextLevel8))
-        levelTexts.add(findViewById(R.id.buttonTextLevel9))
-        levelTexts.add(findViewById(R.id.buttonTextLevel10))
-
-        levelButtons.add(findViewById(R.id.buttonLevel1))
-        levelButtons.add(findViewById(R.id.buttonLevel2))
-        levelButtons.add(findViewById(R.id.buttonLevel3))
-        levelButtons.add(findViewById(R.id.buttonLevel4))
-        levelButtons.add(findViewById(R.id.buttonLevel5))
-        levelButtons.add(findViewById(R.id.buttonLevel6))
-        levelButtons.add(findViewById(R.id.buttonLevel7))
-        levelButtons.add(findViewById(R.id.buttonLevel8))
-        levelButtons.add(findViewById(R.id.buttonLevel9))
-        levelButtons.add(findViewById(R.id.buttonLevel10))
-
-        //TODO deshardcodear esto, binding? hacer un padre y acceder a los hijos?
+        for (i in 1..10) {
+            levelButtons.add(findViewById<View>(resources.getIdentifier("buttonLevel$i", "id", this.packageName)) as ImageButton)
+            levelTexts.add(findViewById<View>(resources.getIdentifier("buttonTextLevel$i", "id", this.packageName)) as TextView)
+        }
 
         this.upadateAvailableLevels()
 
