@@ -1,28 +1,19 @@
 <resources>
     <string name="app_name">TPTDL</string>
-    <string name="mapa">Mapa</string>
+    <string name="map">Mapa</string>
     <string name="settings">Settings</string>
-    <string name="continuar">Continuar</string>
+    <string name="play">Play</string>
     <string name="apes_crush">Apes Crush</string>
-    <string name="musica">Musica</string>
-    <string name="levelNumber5">5</string>
-    <string name="levelNumber4">4</string>
-    <string name="levelNumber3">3</string>
-    <string name="levelNumber2">2</string>
-    <string name="textLevelNumber1">1</string>
-    <string name="textLevelNumber2">2</string>
-    <string name="textLevelNumber3">3</string>
-    <string name="textLevelNumber4">4</string>
-    <string name="textLevelNumber5">5</string>
+    <string name="music">Music</string>
     <string name="levelNumber1">1</string>
-    <string name="textLevelNumber6">6</string>
-    <string name="textLevelNumber7">7</string>
-    <string name="textLevelNumber8">8</string>
-    <string name="textLevelNumber9">9</string>
-    <string name="textLevelNumber10">10</string>
-    <string name="levelNumber10">10</string>
-    <string name="levelNumber9">9</string>
-    <string name="levelNumber8">8</string>
-    <string name="levelNumber7">7</string>
+    <string name="levelNumber2">2</string>
+    <string name="levelNumber3">3</string>
+    <string name="levelNumber4">4</string>
+    <string name="levelNumber5">5</string>
     <string name="levelNumber6">6</string>
+    <string name="levelNumber7">7</string>
+    <string name="levelNumber8">8</string>
+    <string name="levelNumber9">9</string>
+    <string name="levelNumber10">10</string>
+
 </resources>
