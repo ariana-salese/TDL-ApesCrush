@@ -15,6 +15,7 @@ class MapActivity : AppCompatActivity() {
 
     private val levelTexts : MutableList<TextView> = mutableListOf()
     private val levelButtons : MutableList<ImageButton> = mutableListOf()
+    private var mapFase = 0
     private val lastAvailableLevel : Int = 15
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,10 +30,9 @@ class MapActivity : AppCompatActivity() {
             background.setImageResource(R.drawable.ic_map_hot)
         } else if (false) { //WeatherState.isCold() //TODO
             background.setImageResource(R.drawable.ic_map_cold)
-        } //else if (true) { //WeatherState.isWindy()
-          //  background.setImageResource(R.drawable.ic_map_windy)
-
-        //} TODO Ari, agragar mapa windy
+        } else if (true) { //WeatherState.isWindy()
+            background.setImageResource(R.drawable.ic_map_windy)
+        }
 
         for (i in 1..10) {
             levelButtons.add(findViewById<View>(resources.getIdentifier("buttonLevel$i", "id", this.packageName)) as ImageButton)
@@ -45,14 +45,18 @@ class MapActivity : AppCompatActivity() {
 
     fun clickOnLevelButton(view: View) {
         //TODO crear un levelActivity
-        println("Se clickeo nivel: " + view.contentDescription)
+
+        val levelNumber = view.contentDescription.toString().toInt() + mapFase * 10
+
+        println("Se clickeo nivel: $levelNumber")
+
     }
 
     private fun upadateAvailableLevels() {
         for (i in 0..9) {
             if (levelTexts[i].text.toString().toInt() > lastAvailableLevel) {
                 levelButtons[i].isClickable = false
-                levelButtons[i].alpha =0.5f
+                levelButtons[i].alpha = 0.5f
             }
             else {
                 levelButtons[i].isClickable = true
@@ -75,6 +79,8 @@ class MapActivity : AppCompatActivity() {
 
         for (levelText in levelTexts) levelUp(levelText)
 
+        mapFase += 1
+
         this.upadateAvailableLevels()
     }
 
@@ -82,6 +88,8 @@ class MapActivity : AppCompatActivity() {
         if (levelTexts[0].text == "1") return
 
         for (levelText in levelTexts) levelDown(levelText)
+
+        mapFase -= 1
 
         this.upadateAvailableLevels()
     }

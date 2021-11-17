@@ -43,11 +43,6 @@ class MainActivity : AppCompatActivity() {
             println(weather.fetchCurrent())
         }*/
 
-        //TODO implementarlo con corutinas
-
-        //val gameBoard: GameBoard = GameBoard(3,3)
-        //gameBoard.printBoard()
-
         val mapButton: Button = findViewById(R.id.map_button)
         mapButton.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
