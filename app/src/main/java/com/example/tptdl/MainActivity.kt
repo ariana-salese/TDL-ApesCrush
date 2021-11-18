@@ -7,22 +7,40 @@ package com.example.tptdl
 //import kotlinx.coroutines.runBlocking
 
 import android.Manifest
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.media.Image
 import android.os.Bundle
+import android.os.IBinder
+import android.provider.Settings
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.example.tptdl.weatherAPI.Normal
 import com.example.tptdl.weatherAPI.Weather
+import com.example.tptdl.weatherAPI.WeatherState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+
 //import androidx.databinding.DataBindingUtil
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var connection: ServiceConnection
+
+    var weatherService: WeatherService? = null
+
     private lateinit var map: MapActivity
     private lateinit var level: LevelActivity
     private lateinit var settings: SettingsActivity
+
+    private lateinit var currentWeather: WeatherState
 
     // Contains all the views
     //TODO poner bien las bindings para acceder a las views
@@ -32,16 +50,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val weather =  Weather()
-
         askForPermissions()
-
-        val intent_act = Intent(this, WeatherService::class.java)
-        startService(intent_act)
-
-        /*GlobalScope.launch{
-            println(weather.fetchCurrent())
-        }*/
 
         val mapButton: Button = findViewById(R.id.map_button)
         mapButton.setOnClickListener {
@@ -54,6 +63,20 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
+
+        connection = object : ServiceConnection {
+            override fun onServiceDisconnected(componentName: ComponentName) {
+                weatherService = null
+            }
+            override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
+                println("Connected")
+                weatherService = (service as WeatherService.WeatherServiceBinder).service
+
+                updateCurrentWeather()
+            }
+        }
+
+        bindService(Intent(this, WeatherService::class.java),connection, Context.BIND_AUTO_CREATE)
     }
 
     private fun askForPermissions(){
@@ -83,8 +106,40 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.ACCESS_BACKGROUND_LOCATION))
     }
 
-    fun clickOnLevelButton(view: View) {
-        println(view.id)
+    private fun updateCurrentWeather(){
+
+        val playButton : Button = findViewById(R.id.play_button)
+        val mapButton : Button = findViewById(R.id.map_button)
+
+        playButton.isClickable = false
+        mapButton.isClickable = false
+        playButton.alpha = 0.5f
+        mapButton.alpha = 0.5f
+
+        GlobalScope.launch (Dispatchers.IO) {
+
+            val currentWeatherDeferred = GlobalScope.async { weatherService?.updateWeather() }
+
+            val weatherResponse = currentWeatherDeferred.await()
+
+            if(weatherResponse == null){
+                //TODO Notify user that no weather information is available
+                println("no weather information available")
+                currentWeather = Normal()
+            }
+            else{
+                currentWeather = weatherResponse
+            }
+
+            playButton.isClickable = true
+            mapButton.isClickable = true
+            playButton.alpha = 1f
+            mapButton.alpha = 1f
+        }
+    }
+
+    fun clickOnPlayButton(view: View) {
+        println(currentWeather)
     }
     /**
      * Called when the user navigates away from the app but might come back

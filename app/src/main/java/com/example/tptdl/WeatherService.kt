@@ -5,8 +5,10 @@ import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Binder
 import android.os.IBinder
 import androidx.core.app.ActivityCompat
+import com.example.tptdl.weatherAPI.Normal
 import com.example.tptdl.weatherAPI.Weather
 import com.example.tptdl.weatherAPI.WeatherState
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -18,34 +20,31 @@ import kotlinx.coroutines.*
 
 class WeatherService : Service() {
 
+    val binder: IBinder = WeatherServiceBinder()
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var currentWeather: WeatherState
 
     override fun onCreate() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        println("Antes")
-
-        GlobalScope.launch{
-            updateWeather()
-        }
-        println("Desp")
     }
     override fun onBind(intent: Intent): IBinder {
-        TODO("Return the communication channel to the service.")
+        return binder
     }
 
-    fun getCurrentWeather() : WeatherState{
+    fun getCurrentWeather() : WeatherState?{
+        if(!this::currentWeather.isInitialized) return null
         return currentWeather
     }
 
-    suspend fun updateWeather(){
+    suspend fun updateWeather() : WeatherState?{
 
         val location = GlobalScope.async{getLocation()}
 
         if(location.await() == null){
             println("No hay location")
-            return
+            return null
         }
         println("LOCATION: LAT: " + location.await()!!.latitude + " LON: " + location.await()!!.longitude)
 
@@ -53,8 +52,7 @@ class WeatherService : Service() {
 
         currentWeather = weather.fetchCurrent(location.await())
 
-        println(currentWeather)
-
+        return currentWeather
     }
 
     private suspend fun getLocation() : Location? {
@@ -113,5 +111,12 @@ class WeatherService : Service() {
         return true
     }
 
+    fun test() : String{
+        return "Holu UwU"
+    }
+
+    inner class WeatherServiceBinder : Binder(){
+        val service: WeatherService = this@WeatherService
+    }
 
 }
