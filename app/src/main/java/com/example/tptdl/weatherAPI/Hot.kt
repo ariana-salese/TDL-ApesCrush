@@ -6,4 +6,7 @@ class Hot : WeatherState() {
         return "Hot"
     }
 
+    override fun getMapBackgroundIdName(): String {
+        return "ic_map_hot"
+    }
 }

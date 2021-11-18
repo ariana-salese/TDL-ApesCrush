@@ -30,6 +30,8 @@ import kotlinx.coroutines.launch
 
 //import androidx.databinding.DataBindingUtil
 
+const val WEATHER = "weather"
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var connection: ServiceConnection
@@ -55,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         val mapButton: Button = findViewById(R.id.map_button)
         mapButton.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra(WEATHER, currentWeather)
             startActivity(intent)
         }
 
@@ -122,13 +125,12 @@ class MainActivity : AppCompatActivity() {
 
             val weatherResponse = currentWeatherDeferred.await()
 
-            if(weatherResponse == null){
+            currentWeather = if(weatherResponse == null){
                 //TODO Notify user that no weather information is available
                 println("no weather information available")
-                currentWeather = Normal()
-            }
-            else{
-                currentWeather = weatherResponse
+                Normal()
+            } else{
+                weatherResponse
             }
 
             playButton.isClickable = true
@@ -145,7 +147,6 @@ class MainActivity : AppCompatActivity() {
      * Called when the user navigates away from the app but might come back
      */
     override fun onSaveInstanceState(outState: Bundle) {
-
         super.onSaveInstanceState(outState)
     }
 

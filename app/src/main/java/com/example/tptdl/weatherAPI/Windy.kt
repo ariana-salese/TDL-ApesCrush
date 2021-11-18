@@ -6,4 +6,7 @@ class Windy : WeatherState() {
         return "Windy"
     }
 
+    override fun getMapBackgroundIdName(): String {
+        return "ic_map_windy"
+    }
 }

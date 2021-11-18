@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.tptdl.weatherAPI.WeatherState
 import kotlinx.coroutines.processNextEventInCurrentThread
 import org.w3c.dom.Text
 
@@ -17,22 +18,19 @@ class MapActivity : AppCompatActivity() {
     private val levelButtons : MutableList<ImageButton> = mutableListOf()
     private var mapFase = 0
     private val lastAvailableLevel : Int = 15
+    private lateinit var currentWeather: WeatherState
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
+        currentWeather = intent.getSerializableExtra(WEATHER) as WeatherState
+
+        println("ESTOY EN MAPA, CURRENT WEATHER ES: $currentWeather")
+
         val background: ImageView = findViewById(R.id.backgroundImage)
 
-        if (false) { //WeatherState.isRainy()
-            background.setImageResource(R.drawable.ic_map_rainy)
-        } else if (false) { //WeatherState.isHot()
-            background.setImageResource(R.drawable.ic_map_hot)
-        } else if (false) { //WeatherState.isCold() //TODO
-            background.setImageResource(R.drawable.ic_map_cold)
-        } else if (true) { //WeatherState.isWindy()
-            background.setImageResource(R.drawable.ic_map_windy)
-        }
+        background.setImageResource(resources.getIdentifier(currentWeather.getMapBackgroundIdName(), "drawable", this.packageName))
 
         for (i in 1..10) {
             levelButtons.add(findViewById<View>(resources.getIdentifier("buttonLevel$i", "id", this.packageName)) as ImageButton)

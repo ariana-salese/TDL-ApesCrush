@@ -56,7 +56,7 @@ class Weather {
 
         val cleanWeatherData = this.cleanWeatherData(this.getWeatherData(location)) ?: return Normal()
 
-        //Prioridades: Lluvia, Calor, Frio, Viento
+        //Priorities: Rainy, Hot, Cold, Windy
 
         if (cleanWeatherData.get("rain") == "Rain") return Rainy()
 
@@ -64,7 +64,7 @@ class Weather {
 
         if (cleanWeatherData.get("temperature")?.toFloat() ?: 0f < 15) return Cold()
 
-        if (cleanWeatherData.get("windSpeed")?.toFloat() ?: 0f > 10) return Windy()
+        if (cleanWeatherData.get("windSpeed")?.toFloat() ?: 0f > 6) return Windy()
 
         return Normal() //TODO agregar constantes
     }
