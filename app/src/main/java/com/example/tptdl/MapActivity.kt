@@ -1,16 +1,12 @@
 package com.example.tptdl
 
-import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.tptdl.weatherAPI.WeatherState
-import kotlinx.coroutines.processNextEventInCurrentThread
-import org.w3c.dom.Text
 
 class MapActivity : AppCompatActivity() {
 
@@ -18,40 +14,39 @@ class MapActivity : AppCompatActivity() {
     private val levelButtons : MutableList<ImageButton> = mutableListOf()
     private var mapFase = 0
     private val lastAvailableLevel : Int = 15
+    private val amountOfVisibleLevels = 10
     private lateinit var currentWeather: WeatherState
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
-        currentWeather = intent.getSerializableExtra(WEATHER) as WeatherState
+        currentWeather = intent.getSerializableExtra("weather") as WeatherState
 
-        println("ESTOY EN MAPA, CURRENT WEATHER ES: $currentWeather")
+        //println("ESTOY EN MAPA, CURRENT WEATHER ES: $currentWeather")
 
         val background: ImageView = findViewById(R.id.backgroundImage)
 
         background.setImageResource(resources.getIdentifier(currentWeather.getMapBackgroundIdName(), "drawable", this.packageName))
 
-        for (i in 1..10) {
+        for (i in 1 until amountOfVisibleLevels) {
             levelButtons.add(findViewById<View>(resources.getIdentifier("buttonLevel$i", "id", this.packageName)) as ImageButton)
             levelTexts.add(findViewById<View>(resources.getIdentifier("buttonTextLevel$i", "id", this.packageName)) as TextView)
         }
 
         this.upadateAvailableLevels()
-
     }
 
     fun clickOnLevelButton(view: View) {
         //TODO crear un levelActivity
 
-        val levelNumber = view.contentDescription.toString().toInt() + mapFase * 10
+        val levelNumber = view.contentDescription.toString().toInt() + mapFase * amountOfVisibleLevels
 
         println("Se clickeo nivel: $levelNumber")
-
     }
 
     private fun upadateAvailableLevels() {
-        for (i in 0..9) {
+        for (i in 0 until amountOfVisibleLevels - 1) {
             if (levelTexts[i].text.toString().toInt() > lastAvailableLevel) {
                 levelButtons[i].isClickable = false
                 levelButtons[i].alpha = 0.5f
@@ -64,16 +59,16 @@ class MapActivity : AppCompatActivity() {
     }
 
     private fun levelUp(levelText: TextView) {
-        levelText.text = (levelText.text.toString().toInt( ) + 10).toString()
+        levelText.text = (levelText.text.toString().toInt( ) + amountOfVisibleLevels).toString()
     }
 
     private fun levelDown(levelText: TextView) {
-        levelText.text = (levelText.text.toString().toInt( ) - 10).toString()
+        levelText.text = (levelText.text.toString().toInt( ) - amountOfVisibleLevels).toString()
     }
 
     fun upMap(view: View) {
 
-        if (levelTexts[9].text.toString().toInt() > lastAvailableLevel) return
+        if (levelTexts.last().text.toString().toInt() > lastAvailableLevel) return
 
         for (levelText in levelTexts) levelUp(levelText)
 
@@ -83,7 +78,7 @@ class MapActivity : AppCompatActivity() {
     }
 
     fun downMap(view: View) {
-        if (levelTexts[0].text == "1") return
+        if (levelTexts.first().text == "1") return
 
         for (levelText in levelTexts) levelDown(levelText)
 

@@ -1,27 +1,18 @@
 package com.example.tptdl
 
-//import kotlinx.coroutines.Dispatchers
-//import kotlinx.coroutines.GlobalScope
-//import kotlinx.coroutines.launch
-
-//import kotlinx.coroutines.runBlocking
-
 import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.media.Image
 import android.os.Bundle
 import android.os.IBinder
-import android.provider.Settings
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tptdl.weatherAPI.Normal
-import com.example.tptdl.weatherAPI.Weather
 import com.example.tptdl.weatherAPI.WeatherState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -29,8 +20,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 //import androidx.databinding.DataBindingUtil
-
-const val WEATHER = "weather"
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         val mapButton: Button = findViewById(R.id.map_button)
         mapButton.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
-            intent.putExtra(WEATHER, currentWeather)
+            intent.putExtra("weather", currentWeather)
             startActivity(intent)
         }
 
