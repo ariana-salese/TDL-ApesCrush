@@ -29,7 +29,7 @@ class MapActivity : AppCompatActivity() {
 
         background.setImageResource(resources.getIdentifier(currentWeather.getMapBackgroundIdName(), "drawable", this.packageName))
 
-        for (i in 1 until amountOfVisibleLevels) {
+        for (i in 1 until amountOfVisibleLevels + 1) {
             levelButtons.add(findViewById<View>(resources.getIdentifier("buttonLevel$i", "id", this.packageName)) as ImageButton)
             levelTexts.add(findViewById<View>(resources.getIdentifier("buttonTextLevel$i", "id", this.packageName)) as TextView)
         }
@@ -46,7 +46,7 @@ class MapActivity : AppCompatActivity() {
     }
 
     private fun upadateAvailableLevels() {
-        for (i in 0 until amountOfVisibleLevels - 1) {
+        for (i in 0 until amountOfVisibleLevels) {
             if (levelTexts[i].text.toString().toInt() > lastAvailableLevel) {
                 levelButtons[i].isClickable = false
                 levelButtons[i].alpha = 0.5f

@@ -9,4 +9,5 @@ class Cold : WeatherState() {
     override fun getMapBackgroundIdName(): String {
         return "ic_map_cold"
     }
+
 }

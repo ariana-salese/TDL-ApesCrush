@@ -12,7 +12,7 @@ class TokenRandomizer(private val bombAppearanceRate : Int) {     // bombAppeara
             allTokens.add(Apple())
             allTokens.add(Banana())
             allTokens.add(Grapes())
-            allTokens.add(Peach())
+            allTokens.add(Orange())
             allTokens.add(Strawberry())
         }
         val amountOfFruitTokens = allTokens.size
@@ -29,7 +29,7 @@ class TokenRandomizer(private val bombAppearanceRate : Int) {     // bombAppeara
         allFruits.add(Apple())
         allFruits.add(Banana())
         allFruits.add(Grapes())
-        allFruits.add(Peach())
+        allFruits.add(Orange())
         allFruits.add(Strawberry())
     }
 

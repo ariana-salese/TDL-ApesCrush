@@ -7,8 +7,8 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Binder
 import android.os.IBinder
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import com.example.tptdl.weatherAPI.Normal
 import com.example.tptdl.weatherAPI.Weather
 import com.example.tptdl.weatherAPI.WeatherState
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -20,15 +20,16 @@ import kotlinx.coroutines.*
 
 class WeatherService : Service() {
 
-    val binder: IBinder = WeatherServiceBinder()
+    private val binder: IBinder = WeatherServiceBinder()
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var currentWeather: WeatherState
 
     override fun onCreate() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
+        Toast.makeText(this, "creating service", Toast.LENGTH_SHORT).show()
     }
+
     override fun onBind(intent: Intent): IBinder {
         return binder
     }
@@ -46,6 +47,7 @@ class WeatherService : Service() {
             println("No hay location")
             return null
         }
+
         println("LOCATION: LAT: " + location.await()!!.latitude + " LON: " + location.await()!!.longitude)
 
         val weather = Weather()
@@ -71,7 +73,7 @@ class WeatherService : Service() {
 
         return try{
             Tasks.await(fusedLocationClient.lastLocation)
-            null // Esto hace que no se pueda usar la ubicación guardada en el caché, y siempre se actualize (Luego lo sacamos)
+            null // Esto hace que no se pueda usar la ubicación guardada en el caché, y siempre se actualize (TODO Luego lo sacamos)
         } catch (e: SecurityException){
             println("No permissions - last location")
             null
@@ -81,22 +83,33 @@ class WeatherService : Service() {
         }
     }
 
+    override fun onUnbind(intent: Intent?): Boolean {
+        Toast.makeText(this, "Unbinding service", Toast.LENGTH_SHORT).show()
+        return super.onUnbind(intent)
+    }
+
+    override fun onDestroy() {
+        Toast.makeText(this, "service Disconnected", Toast.LENGTH_SHORT).show()
+        println("Disconnected on service")
+        super.onDestroy()
+    }
+
     private fun getCurrentLocation() : Location? {
 
         val cancellationSource = CancellationTokenSource()
 
         return try{
             Tasks.await(fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY,cancellationSource.token))
-        } catch (e: SecurityException){
+        } catch (e: SecurityException) {
             println("No permissions - current location")
             null
-        } catch (e: Exception){
+        } catch (e: Exception) {
             println(e)
             null
         }
     }
 
-    private fun checkForPermissions() : Boolean{
+    private fun checkForPermissions() : Boolean {
         if (ActivityCompat.checkSelfPermission(
                 baseContext,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -111,12 +124,7 @@ class WeatherService : Service() {
         return true
     }
 
-    fun test() : String{
-        return "Holu UwU"
-    }
-
     inner class WeatherServiceBinder : Binder(){
         val service: WeatherService = this@WeatherService
     }
-
 }
