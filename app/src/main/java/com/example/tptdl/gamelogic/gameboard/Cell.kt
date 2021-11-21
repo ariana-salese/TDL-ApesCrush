@@ -1,12 +1,32 @@
 package com.example.tptdl.gamelogic.gameboard
 
+import androidx.databinding.BaseObservable
+import androidx.databinding.Bindable
+import androidx.databinding.ObservableField
 import com.example.tptdl.gamelogic.Score
 import com.example.tptdl.gamelogic.tokens.Token
 import com.example.tptdl.gamelogic.tokens.TokenRandomizer
 import com.example.tptdl.gamelogic.tokens.Void
 
-class Cell(var value : Token) {
+class User   : BaseObservable() {
 
+
+}
+
+class Cell(var value : Token){
+    var obsValue = ObservableField<Token>()
+    /*
+    obsvalue = value
+
+    @get:Bindable
+    value : Token = ObservableField<Token>()
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.firstName)
+        }
+
+    value = ObservableField<Token>()
+    */
     fun setCellValue(newValue : Token) {
         value = newValue
     }

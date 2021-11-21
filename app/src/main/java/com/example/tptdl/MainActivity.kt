@@ -38,6 +38,13 @@ class MainActivity : AppCompatActivity() {
 
         askForPermissions()
 
+        val levelButton: Button = findViewById(R.id.play_button)
+        levelButton.setOnClickListener {
+            val intent = Intent(this, LevelActivity::class.java)
+            intent.putExtra("weather", currentWeather)
+            startActivity(intent)
+        }
+
         val mapButton: Button = findViewById(R.id.map_button)
         mapButton.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
