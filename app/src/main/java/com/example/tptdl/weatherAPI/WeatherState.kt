@@ -3,7 +3,7 @@ package com.example.tptdl.weatherAPI
 import com.example.tptdl.gamelogic.gameboard.RuleSet
 import java.io.Serializable
 
-abstract class WeatherState : RuleSet, Serializable{
+abstract class WeatherState : RuleSet, Serializable {
     /* cree la clase RuleSet (set de reglas) que ahora se le pasa a GameBoard y esa clase sabra lo
     que debe hacer GameBoard, esta clase la paso a que implemente metodos comunes entre los
     distintos tipos de climas.
@@ -17,4 +17,5 @@ abstract class WeatherState : RuleSet, Serializable{
     }
 
     abstract fun getMapBackgroundIdName() : String
+
 }

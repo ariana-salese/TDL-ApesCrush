@@ -8,16 +8,11 @@ import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
 import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.example.tptdl.weatherAPI.Normal
-import com.example.tptdl.weatherAPI.WeatherState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import com.example.tptdl.weatherAPI.*
+import kotlinx.coroutines.*
 
 //import androidx.databinding.DataBindingUtil
 
@@ -58,6 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         connection = object : ServiceConnection {
             override fun onServiceDisconnected(componentName: ComponentName) {
+                println("Disconnected")
                 weatherService = null
             }
             override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
@@ -67,6 +63,8 @@ class MainActivity : AppCompatActivity() {
                 updateCurrentWeather()
             }
         }
+
+        startService(Intent(this, WeatherService::class.java))
 
         bindService(Intent(this, WeatherService::class.java),connection, Context.BIND_AUTO_CREATE)
     }
@@ -114,11 +112,11 @@ class MainActivity : AppCompatActivity() {
 
             val weatherResponse = currentWeatherDeferred.await()
 
-            currentWeather = if(weatherResponse == null){
+            currentWeather = if(weatherResponse == null) {
                 //TODO Notify user that no weather information is available
                 println("no weather information available")
                 Normal()
-            } else{
+            } else {
                 weatherResponse
             }
 
@@ -126,7 +124,22 @@ class MainActivity : AppCompatActivity() {
             mapButton.isClickable = true
             playButton.alpha = 1f
             mapButton.alpha = 1f
+
+            setWeatherIndicator()
         }
+    }
+
+
+    fun setWeatherIndicator() {
+
+        val weatherIcon : ImageView = findViewById(R.id.weatherIcon)
+        val weatherText : TextView = findViewById(R.id.weatherText)
+
+        this@MainActivity.runOnUiThread {
+            weatherIcon.setImageResource(resources.getIdentifier(currentWeather.toString().lowercase(), "drawable", this.packageName))
+            weatherText.text = currentWeather.toString()
+        }
+
     }
 
     fun clickOnPlayButton(view: View) {
@@ -165,8 +178,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         println("DESTROY MAIN")
+        Toast.makeText(this, "DESTROY MAIN", Toast.LENGTH_SHORT).show()
+        super.onDestroy()
     }
 
     override fun onRestart() {

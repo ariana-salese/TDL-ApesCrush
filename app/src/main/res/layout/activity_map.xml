@@ -163,6 +163,7 @@
         app:layout_constraintTop_toTopOf="@+id/backgroundImage"
         app:layout_constraintVertical_bias="0.188" />
 
+
     <ImageButton
         android:id="@+id/buttonLevel10"
         android:layout_width="75dp"
@@ -174,11 +175,10 @@
         android:src="@drawable/ic_boton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.627"
+        app:layout_constraintHorizontal_bias="0.607"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/backgroundImage"
-        app:layout_constraintVertical_bias="0.069" />
-
+        app:layout_constraintVertical_bias="0.057" />
 
     <TextView
         android:id="@+id/buttonTextLevel1"
