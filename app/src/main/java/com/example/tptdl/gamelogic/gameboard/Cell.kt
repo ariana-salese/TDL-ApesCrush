@@ -45,4 +45,14 @@ class Cell(var value : Token) {
         value.pop(score)
         this.emptyCell()
     }
+
+    fun switchValues(cell: Cell) {
+        val currentValue = value
+        value = cell.getCellValue()
+        cell.setCellValue(currentValue)
+    }
+
+    override fun toString(): String {
+        return value.toString()
+    }
 }

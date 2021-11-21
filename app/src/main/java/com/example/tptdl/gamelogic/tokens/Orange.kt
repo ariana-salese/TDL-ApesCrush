@@ -1,9 +1,9 @@
 package com.example.tptdl.gamelogic.tokens
 
-class Peach : Fruit() {
+class Orange : Fruit() {
     override val pointValue = 15
 
     override fun toString() : String {
-        return "Peach"
+        return "Orange"
     }
 }

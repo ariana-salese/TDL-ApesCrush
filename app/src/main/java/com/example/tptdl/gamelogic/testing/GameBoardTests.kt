@@ -46,12 +46,17 @@ fun test05gameBoardSwitchTest() {
     val cell1Coords = Pair(0, 0)
     val cell2Coords = Pair(0, 1)
     val cell1 = board.obtainCell(Pair(0, 0))
+    val cell1Value = cell1.getCellValue()
     val cell2 = board.obtainCell(Pair(0, 1))
-    board.moveCell(Movement(cell1Coords, "Down"))
+    val cell2Value = cell2.getCellValue()
+    board.doMovement(Movement(cell1Coords, "Down"))
+    val newCell1Value = cell1.getCellValue()
+    val newCell2Value = cell2.getCellValue()
     println("Board after switch:")
     board.printBoard()
-    if ((cell1 == board.obtainCell(cell2Coords)) && (cell2 == board.obtainCell(cell1Coords)))
+    if ((cell1Value == newCell2Value) && (cell2Value == newCell1Value))
         println("Success")
+    else println("Failure")
 }
 
 fun test06boardRemovalDisplayTest() {
@@ -81,7 +86,7 @@ fun test07boardComboDisplayTest() {
     board.setCellTESTING(Pair(5, 8), (Cell(Banana())))
     board.setCellTESTING(Pair(4, 7), (Cell(Banana())))
     val movement = Movement(Pair(4, 7), "Down")
-    board.moveCell(movement)
+    board.doMovement(movement)
     println("Board after movement that should trigger combo:")
     board.printBoard()
     board.checkForCombosTESTING()

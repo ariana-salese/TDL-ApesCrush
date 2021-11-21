@@ -51,7 +51,7 @@ open class Line(private val size : Int, private val bombAppearanceRate : Int) {
 
         for (i in 0 until size-2) {
             val listOfCellsToCheck = listOf(myCells[i], myCells[i+1], myCells[i+2])
-            if (this.areEqual(listOfCellsToCheck) && (!myCells[i].isExplosive())) {    // if this is valid combo
+            if (this.areEqual(listOfCellsToCheck) && (!myCells[i].isExplosive())) {    // if this is valid combo (and it isn't a combo of just bombs)
                 listOfCellsToCheck.forEach { if (!listOfCellsInCombos.contains(it)) listOfCellsInCombos.add(it) }     // if the cell is not marked for removal, mark it
             }
         }
@@ -74,5 +74,8 @@ open class Line(private val size : Int, private val bombAppearanceRate : Int) {
         }
     }
 
+    fun switchCellValues(firstCellIndex: Int, secondCellIndex: Int) {
+        myCells[firstCellIndex].switchValues(myCells[secondCellIndex])
+    }
 
 }

@@ -18,7 +18,8 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
         for (i in 1..width)
             myColumns.add(Column(height, ruleSet.obtainBombRates()))
         for (i in 1..height)
-            myRows.add(Row(height, ruleSet.obtainBombRates()))
+            myRows.add(Row(width, ruleSet.obtainBombRates()))
+        this.updateRows()
     }
 
     fun printBoard() {
@@ -34,13 +35,23 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
        this function is called, the controller will checkForCombos(), if none are found it will call
        undoLastMovement().
     */
-    fun moveCell(movement : Movement) {
+    fun doMovement(movement : Movement) {
         if (!movement.checkIfMoveIsValid(height, width))
             throw Exception("Invalid movement")
-        val cellToSwitch = movement.obtainCellToSwitch()
-        switchCells(movement.obtainCellCoords(), cellToSwitch)
+        val cellToSwitchCoords = movement.obtainCellCoords()
+        val cellToSwitchWithCoords = movement.obtainCellToSwitch()
+        val cellToSwitch = obtainCell(cellToSwitchCoords)
+        val cellToSwitchWith = obtainCell(cellToSwitchWithCoords)
+        switchCellValues(cellToSwitch, cellToSwitchWith)
         lastMovement = movement
         movementCounter.executeMovement()
+    }
+
+    /* Switches values of 2 different Cell's (passed through parameters as a Pair of Int's,
+     doesn't accept invalid switches)
+     */
+    fun switchCellValues(selectedCell: Cell, cellToSwitch: Cell) {
+        selectedCell.switchValues(cellToSwitch)
     }
 
     // Switches the position of 2 cells in the GameBoard (Doesn't accept invalid switches).
@@ -106,7 +117,8 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
     // Will vertically drop the current tokens as long as there is Void below
     private fun dropCurrentTokens() {
         for (i in 0 until width) { (myColumns[i]).shoveValuesToBottom() }
-        this.updateRows()
+        // this.updateRows() //now unused, since values are switched instead of cells
+        // updateView()?
     }
 
     private fun updateRows() {
@@ -138,7 +150,7 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
     }
 
     /* Receives a list of cells, function will check for each cell individually if there's an explosive
-       in any of it's four adjacent directions, if there is onem it will add it to a list which is returned
+       in any of it's four adjacent directions, if there is one it will add it to a list which is returned
        at the end of the function.
      */
     private fun checkForAdjacentExplosives(markedForRemoval: MutableList<Cell>): MutableList<Cell> {
@@ -197,7 +209,7 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
 
     // Undoes the last movement (does it again which causes the board to return to it's previous state)
     fun undoLastMovement() {
-        this.moveCell(lastMovement)
+        this.doMovement(lastMovement)
         movementCounter.undoMovement()
     }
 
@@ -218,17 +230,17 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
         val bombsToExplode : MutableList<Cell> = mutableListOf()
 
         for (i in 0 until width) {
-            //println("THIS IS IN COMBOS: " + myColumns[i].getAllCombos())
+            //println("THIS IS IN COMBOS: " + (myColumns[i].getAllCombos().toString()))
             //println("stop")
             markedForRemoval.addAll(myColumns[i].getAllCombos())
         }
         for (i in 0 until height) {
-            //println("THIS IS IN COMBOS: " + myRows[i].getAllCombos())
+            //println("THIS IS IN COMBOS: " + (myRows[i].getAllCombos().toString()))
             //println("stop")
             markedForRemoval.addAll(myRows[i].getAllCombos())
         }
 
-        //println("SHOULD HAVE ALL COMBOS" + markedForRemoval)
+        //println("SHOULD HAVE ALL COMBOS" + markedForRemoval.toString())
         if (markedForRemoval.isEmpty()) return false
 
         bombsToExplode.addAll(this.checkForAdjacentExplosives(markedForRemoval))
