@@ -8,12 +8,12 @@ import com.example.tptdl.gamelogic.tokens.Token
 import com.example.tptdl.gamelogic.tokens.TokenRandomizer
 import com.example.tptdl.gamelogic.tokens.Void
 
-class User   : BaseObservable() {
+class User : BaseObservable() {
 
 
 }
 
-class Cell(var value : Token){
+class Cell(var value : Token) {
     var obsValue = ObservableField<Token>()
     /*
     obsvalue = value

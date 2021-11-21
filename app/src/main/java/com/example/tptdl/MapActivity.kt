@@ -1,5 +1,6 @@
 package com.example.tptdl
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -20,7 +21,7 @@ class MapActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
-
+        supportActionBar?.hide()
         currentWeather = intent.getSerializableExtra("weather") as WeatherState
 
         //println("ESTOY EN MAPA, CURRENT WEATHER ES: $currentWeather")
@@ -43,6 +44,11 @@ class MapActivity : AppCompatActivity() {
         val levelNumber = view.contentDescription.toString().toInt() + mapFase * amountOfVisibleLevels
 
         println("Se clickeo nivel: $levelNumber")
+
+        val intent = Intent(this, LevelActivity::class.java)
+        intent.putExtra("weather", currentWeather)
+        intent.putExtra("levelNumber", levelNumber)
+        startActivity(intent)
     }
 
     private fun upadateAvailableLevels() {
