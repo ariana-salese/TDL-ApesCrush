@@ -1,11 +1,16 @@
 package com.example.tptdl.gamelogic.gameboard
 
+import android.database.Observable
+import androidx.lifecycle.Observer
+import com.example.tptdl.CellButton
 import com.example.tptdl.gamelogic.MovementsCounter
 import com.example.tptdl.gamelogic.Score
 import com.example.tptdl.gamelogic.tokens.Void
 
 // "internal" visibility modifier lets me access the class' parameters as long as it's from the same module
-class GameBoard(internal val width : Int, internal val height : Int, private val ruleSet : RuleSet, private val score : Score, private val movementCounter : MovementsCounter) {    // GameBoard probably shouldn't have Score or MovementsCounter in it, LevelActivity should
+class GameBoard(internal val width : Int, internal val height : Int, private val ruleSet : RuleSet, private val score : Score, private val movementCounter : MovementsCounter) :
+    java.util.Observable() {    // GameBoard probably shouldn't have Score or MovementsCounter in it, LevelActivity should
+
     private var myColumns : MutableList<Column> = mutableListOf()
     private var myRows : MutableList<Row> = mutableListOf()
     private var lastMovement = Movement(Pair(0,0), "Right")
@@ -260,6 +265,19 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
         val (x, y) = cellCoords
         myColumns[x].setCellAtIndex(cell, y)
         myRows[y].setCellAtIndex(cell, x)
+    }
+
+    fun linkObservers(buttonList: MutableList<MutableList<CellButton>>) {
+        for (row in 0 until buttonList.size) {
+
+            for (col in 0 until buttonList[row].size) {
+                val cell = myRows[col].getCellAtIndex(row)
+                val button = buttonList[row][col]
+                cell.addObserver(button)
+                button.setCell(cell)
+
+            }
+        }
     }
 
 }

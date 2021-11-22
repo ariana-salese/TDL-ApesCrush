@@ -18,16 +18,14 @@ import android.graphics.Color
 import android.graphics.PixelFormat.TRANSPARENT
 
 import android.widget.LinearLayout
+import java.util.*
 
 
-
-
-class LevelActivity : AppCompatActivity() {
+class LevelActivity : AppCompatActivity(){
     private val height = 8
     private val width = 6
-
     private lateinit var gameboard: GameBoard
-
+    private val buttonList : MutableList<MutableList<CellButton>> = mutableListOf()
     //private lateinit var mainBinding : ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,41 +36,35 @@ class LevelActivity : AppCompatActivity() {
         val widthScreen = displayMetrics.widthPixels
         val widthBoard = (widthScreen * 0.9).roundToInt()
 
-        createBoard(widthBoard, gameboard)
+        createBoard(widthBoard)
+        buttonList.forEach {
+            it.forEach {
+                it.update(null,null)
+            }
+        }
     }
 
-    private fun createBoard(widthBoard: Int, gameBoard: GameBoard) {
+    private fun createBoard(widthBoard: Int) {
         val linearLayout = findViewById<LinearLayout>(R.id.gameBoardLayout)
         val params = linearLayout.layoutParams
-        //params.height = widthBoard
         params.width = widthBoard
         linearLayout.layoutParams = params
         val table = findViewById<TableLayout>(R.id.gameBoardTable)
 
+
         for (row in 0 until height) {
-            //table.setColumnShrinkable(row, true)
+            val buttonListRow : MutableList<CellButton> = mutableListOf()
             val currentRow = TableRow(this)
 
             for (button in 0 until width) {
-                println(button)
-                val currentButton = ImageButton(this)
+                val currentButton = CellButton(this, currentRow, widthBoard / width)
 
-                //Set token image
-                currentButton.setImageResource(R.drawable.orange)
-                currentButton.scaleType = ImageView.ScaleType.FIT_CENTER
-                currentButton.setBackgroundColor(Color.TRANSPARENT)
-
-                //Add image to TableRow
-                currentRow.addView(currentButton)
-
-                //Set image size
-                val params = currentButton.layoutParams
-                params.height = widthBoard / width
-                params.width = widthBoard / width
+                buttonListRow.add(currentButton)
             }
-            //add TableRow to Table
+            buttonList.add(buttonListRow)
             table.addView(currentRow)
         }
-// and finally takes that new table and add it to your layout.
+        gameboard.linkObservers(buttonList)
     }
+
 }

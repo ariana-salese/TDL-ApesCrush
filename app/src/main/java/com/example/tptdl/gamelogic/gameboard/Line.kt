@@ -1,5 +1,6 @@
 package com.example.tptdl.gamelogic.gameboard
 
+import com.example.tptdl.gamelogic.tokens.Banana
 import com.example.tptdl.gamelogic.tokens.TokenRandomizer
 
 open class Line(private val size : Int, private val bombAppearanceRate : Int) {

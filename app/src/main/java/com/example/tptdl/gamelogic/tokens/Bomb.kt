@@ -1,5 +1,6 @@
 package com.example.tptdl.gamelogic.tokens
 
+import com.example.tptdl.R
 import com.example.tptdl.gamelogic.gameboard.Cell
 import com.example.tptdl.gamelogic.gameboard.GameBoard
 // For now this class will implement Token
@@ -38,5 +39,8 @@ class Bomb(private var explosionRadius : Int = 3) : Token() {   // explosionRadi
 
     private fun cannotBeExploded() {
         canBeExploded = false
+    }
+    override fun getPath() : Int {
+        return R.drawable.bomb
     }
 }

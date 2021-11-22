@@ -10,7 +10,9 @@ abstract class Token {
     fun isEqual(anotherToken : Token) : Boolean {
         return this.toString() == anotherToken.toString()
     }
-
+    open fun getPath() : Int {
+        return 0
+    }
     open fun isEmpty() : Boolean {
         return false
     }
