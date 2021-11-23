@@ -9,8 +9,7 @@ import android.os.Binder
 import android.os.IBinder
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import com.example.tptdl.weatherAPI.Weather
-import com.example.tptdl.weatherAPI.WeatherState
+import com.example.tptdl.weatherAPI.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -39,7 +38,7 @@ class WeatherService : Service() {
         return currentWeather
     }
 
-    suspend fun updateWeather() : WeatherState?{
+    suspend fun updateWeather() : WeatherState? {
 
         val location = GlobalScope.async{getLocation()}
 

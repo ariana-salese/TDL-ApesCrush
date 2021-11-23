@@ -22,12 +22,10 @@ class MapActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
         supportActionBar?.hide()
+
+        //Setting background according to weather
         currentWeather = intent.getSerializableExtra("weather") as WeatherState
-
-        //println("ESTOY EN MAPA, CURRENT WEATHER ES: $currentWeather")
-
         val background: ImageView = findViewById(R.id.backgroundImage)
-
         background.setImageResource(resources.getIdentifier(currentWeather.getMapBackgroundIdName(), "drawable", this.packageName))
 
         for (i in 1 until amountOfVisibleLevels + 1) {
