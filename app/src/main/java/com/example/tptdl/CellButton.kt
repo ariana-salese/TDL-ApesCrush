@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.tptdl.gamelogic.gameboard.Cell
 import java.util.*
 
-class CellButton(context : AppCompatActivity, row : TableRow, lenght : Int) : Observer {
+class CellButton(context : AppCompatActivity, row : TableRow, lenght : Int, level : LevelActivity) : Observer {
     private var button : ImageButton
     private lateinit var cell : Cell
 
@@ -20,6 +20,10 @@ class CellButton(context : AppCompatActivity, row : TableRow, lenght : Int) : Ob
         val params = button.layoutParams
         params.height = lenght
         params.width = lenght
+
+        button.setOnClickListener {
+            level.setClicked(this)
+        }
     }
 
     fun setCell(c: Cell) {
@@ -30,4 +34,8 @@ class CellButton(context : AppCompatActivity, row : TableRow, lenght : Int) : Ob
         button.setImageResource(cell.getCellValue().getPath())
     }
 
+    fun getCell() : Cell {
+        return cell
+    }
 }
+

@@ -21,16 +21,18 @@ import android.widget.LinearLayout
 import java.util.*
 
 
-class LevelActivity : AppCompatActivity(){
+class LevelActivity : AppCompatActivity(), Observer{
     private val height = 8
     private val width = 6
+    private var clickedButton : CellButton? = null
     private lateinit var gameboard: GameBoard
     private val buttonList : MutableList<MutableList<CellButton>> = mutableListOf()
     //private lateinit var mainBinding : ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_level)
-        gameboard = GameBoard(height, width, Normal(), Score(), MovementsCounter())
+        gameboard = GameBoard(width, height, Normal(), Score(), MovementsCounter())
+        gameboard.addObserver(this)
         val displayMetrics = DisplayMetrics()
         windowManager.getDefaultDisplay().getMetrics(displayMetrics) //TODO usar cosas no deprecadas
         val widthScreen = displayMetrics.widthPixels
@@ -57,7 +59,7 @@ class LevelActivity : AppCompatActivity(){
             val currentRow = TableRow(this)
 
             for (button in 0 until width) {
-                val currentButton = CellButton(this, currentRow, widthBoard / width)
+                val currentButton = CellButton(this, currentRow, widthBoard / width, this)
 
                 buttonListRow.add(currentButton)
             }
@@ -65,6 +67,25 @@ class LevelActivity : AppCompatActivity(){
             table.addView(currentRow)
         }
         gameboard.linkObservers(buttonList)
+        gameboard.printBoard()
     }
 
+    fun setClicked(button : CellButton) {
+        if (clickedButton == null) {
+            clickedButton = button
+            return
+        }
+        if (gameboard.tryMovement(clickedButton!!.getCell(), button.getCell())) {
+            clickedButton = null
+        }
+        clickedButton = button
+    }
+
+    override fun update(o: Observable?, arg: Any?) {
+        buttonList.forEach {
+            it.forEach { cell->
+                cell.update(null, null)
+            }
+        }
+    }
 }

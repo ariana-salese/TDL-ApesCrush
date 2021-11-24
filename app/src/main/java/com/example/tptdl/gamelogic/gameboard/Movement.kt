@@ -16,7 +16,7 @@ class Movement(private val cellToMove : Pair<Int, Int>, private val direction : 
     }
 
     // Checks if a movement would end up in an out of bounds scenario and returns a boolean.
-    fun checkIfMoveIsValid(height : Int, width : Int): Boolean {
+    fun checkIfOutOfBounds(height : Int, width : Int): Boolean {
         val (x, y) = cellToMove
         return !((x == 0 && (direction == "Left")) || (x == width-1 && (direction == "Right")) || (y == 0 && (direction == "Up")) || (y == height-1 && (direction == "Down"))) // checks for all out of bound possibilities
     }

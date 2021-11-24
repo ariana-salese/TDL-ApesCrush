@@ -1,7 +1,5 @@
 package com.example.tptdl.gamelogic.gameboard
 
-import android.database.Observable
-import androidx.lifecycle.Observer
 import com.example.tptdl.CellButton
 import com.example.tptdl.gamelogic.MovementsCounter
 import com.example.tptdl.gamelogic.Score
@@ -25,6 +23,7 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
         for (i in 1..height)
             myRows.add(Row(width, ruleSet.obtainBombRates()))
         this.updateRows()
+        this.checkForCombos()
     }
 
     fun printBoard() {
@@ -41,7 +40,7 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
        undoLastMovement().
     */
     fun doMovement(movement : Movement) {
-        if (!movement.checkIfMoveIsValid(height, width))
+        if (!movement.checkIfOutOfBounds(height, width))
             throw Exception("Invalid movement")
         val cellToSwitchCoords = movement.obtainCellCoords()
         val cellToSwitchWithCoords = movement.obtainCellToSwitch()
@@ -50,6 +49,7 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
         switchCellValues(cellToSwitch, cellToSwitchWith)
         lastMovement = movement
         movementCounter.executeMovement()
+        notifyObservers()
     }
 
     /* Switches values of 2 different Cell's (passed through parameters as a Pair of Int's,
@@ -271,7 +271,7 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
         for (row in 0 until buttonList.size) {
 
             for (col in 0 until buttonList[row].size) {
-                val cell = myRows[col].getCellAtIndex(row)
+                val cell = myRows[row].getCellAtIndex(col)
                 val button = buttonList[row][col]
                 cell.addObserver(button)
                 button.setCell(cell)
@@ -280,4 +280,36 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
         }
     }
 
+    private fun getAdjacents(cell : Cell): MutableList<Cell> {
+        val cellCoords = getCellCoords(cell)
+        return mutableListOf<Cell>(topCell(cellCoords), bottomCell(cellCoords), rightCell(cellCoords), leftCell(cellCoords))
+    }
+
+    private fun isAdjacent(cell1 : Cell, cell2 : Cell) : Boolean {
+        val adjacentList = getAdjacents(cell1)
+        return adjacentList.contains(cell2)
+    }
+
+    private fun getDirection(cell1 : Cell, cell2 : Cell) : String {
+        val adjacentList = getAdjacents(cell1)
+        val stringsList = mutableListOf("Up", "Down", "Right", "Left")
+        for (i in 0 until adjacentList.size) {
+            if (adjacentList[i] == cell2) {
+                println(stringsList[i])
+                return stringsList[i]
+            }
+        }
+        println("NotValid")
+        return "NotValid"
+    }
+
+    fun tryMovement(cell1 : Cell, cell2 : Cell) : Boolean {
+        if(!isAdjacent(cell1, cell2)) {
+            return false
+        }
+        val direction = getDirection(cell1, cell2)
+        val movement = Movement(getCellCoords(cell1), direction)
+        doMovement(movement)
+        return true
+    }
 }
