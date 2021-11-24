@@ -43,7 +43,7 @@ class WeatherService : Service() {
         val location = GlobalScope.async{getLocation()}
 
         if(location.await() == null){
-            println("No hay location")
+            println("No location available")
             return null
         }
 
@@ -63,7 +63,7 @@ class WeatherService : Service() {
         val lastLocation = GlobalScope.async{getLastLocation()}
         if(lastLocation.await() != null) return lastLocation.await()
 
-        println("Obteniendo current location")
+        println("Fetching current location")
 
         return withContext(Dispatchers.IO) { getCurrentLocation() }
     }
@@ -72,7 +72,7 @@ class WeatherService : Service() {
 
         return try{
             Tasks.await(fusedLocationClient.lastLocation)
-            null // Esto hace que no se pueda usar la ubicación guardada en el caché, y siempre se actualize (TODO Luego lo sacamos)
+            null // Esto hace que no se pueda usar la ubicación guardada en el caché, y siempre se actualize TODO Luego lo sacamos
         } catch (e: SecurityException){
             println("No permissions - last location")
             null
@@ -117,7 +117,6 @@ class WeatherService : Service() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            print("Location permission not granted")
             return false
         }
         return true

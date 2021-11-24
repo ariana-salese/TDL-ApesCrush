@@ -5,22 +5,28 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.IBinder
+import android.text.Layout
 import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.example.tptdl.weatherAPI.*
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 
 //import androidx.databinding.DataBindingUtil
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     private lateinit var connection: ServiceConnection
 
     var weatherService: WeatherService? = null
+    var isCheckingForPermissions = false
 
     private lateinit var map: MapActivity
     private lateinit var level: LevelActivity
@@ -36,7 +42,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         supportActionBar?.hide()
-        askForPermissions()
+
+        askForForegroundPermissions()
+        if(checkForPermissions()) askForBackgroundPermission()
+
 
         val levelButton: Button = findViewById(R.id.play_button)
         levelButton.setOnClickListener {
@@ -66,41 +75,70 @@ class MainActivity : AppCompatActivity() {
             override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
                 println("Connected")
                 weatherService = (service as WeatherService.WeatherServiceBinder).service
-
-                updateCurrentWeather()
+                println("Checking: $isCheckingForPermissions")
+                if(!isCheckingForPermissions) updateCurrentWeather()
             }
         }
 
         startService(Intent(this, WeatherService::class.java))
-
         bindService(Intent(this, WeatherService::class.java),connection, Context.BIND_AUTO_CREATE)
     }
 
-    private fun askForPermissions(){
+    private fun askForForegroundPermissions(){
+
+        isCheckingForPermissions = true
 
         val locationPermissionRequest = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
+            isCheckingForPermissions = false
             when {
                 permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
                     println("Fine permission granted")
                 }
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                    println("Coarse permission granted")
-                }
-                permissions.getOrDefault(Manifest.permission.ACCESS_BACKGROUND_LOCATION, false) -> {
-                    println("Background permission granted")
+                    println("Coarse permission granted, location detection won't work")
                 }
                 else -> {
-                println("No permission granted")
+                println("No permission granted, location detection won't work")
+                }
             }
-            }
+            if(weatherService != null) updateCurrentWeather()
         }
 
         locationPermissionRequest.launch(arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION))
+            Manifest.permission.ACCESS_COARSE_LOCATION,))
+    }
+
+    private fun askForBackgroundPermission(){
+
+        val backgroundPermissionRequest = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { permission ->
+            if(permission){
+                println("Background permission granted")
+            }
+            else{
+                println("No background permission granted")
+            }
+        }
+
+        backgroundPermissionRequest.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+    }
+
+    private fun checkForPermissions() : Boolean {
+        if (ActivityCompat.checkSelfPermission(
+                baseContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                baseContext,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return false
+        }
+        return true
     }
 
     private fun updateCurrentWeather(){
@@ -120,8 +158,7 @@ class MainActivity : AppCompatActivity() {
             val weatherResponse = currentWeatherDeferred.await()
 
             currentWeather = if(weatherResponse == null) {
-                //TODO Notify user that no weather information is available
-                println("no weather information available")
+                Snackbar.make(findViewById(R.id.imageView), "No weather information available, using default weather", BaseTransientBottomBar.LENGTH_SHORT).show()
                 Normal()
             } else {
                 weatherResponse
