@@ -18,6 +18,7 @@ import android.graphics.Color
 import android.graphics.PixelFormat.TRANSPARENT
 
 import android.widget.LinearLayout
+import com.example.tptdl.weatherAPI.WeatherState
 import java.util.*
 
 
@@ -27,21 +28,35 @@ class LevelActivity : AppCompatActivity(), Observer{
     private var clickedButton : CellButton? = null
     private lateinit var gameboard: GameBoard
     private val buttonList : MutableList<MutableList<CellButton>> = mutableListOf()
+    private lateinit var currentWeather : WeatherState
     //private lateinit var mainBinding : ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_level)
+
         gameboard = GameBoard(width, height, Normal(), Score(), MovementsCounter())
         gameboard.addObserver(this)
+
+        supportActionBar?.hide()
+
+        gameboard = GameBoard(height, width, Normal(), Score(), MovementsCounter())
+
+
         val displayMetrics = DisplayMetrics()
         windowManager.getDefaultDisplay().getMetrics(displayMetrics) //TODO usar cosas no deprecadas
         val widthScreen = displayMetrics.widthPixels
         val widthBoard = (widthScreen * 0.9).roundToInt()
 
+        //Setting background according to weather
+        currentWeather = intent.getSerializableExtra("weather") as WeatherState
+        val background = findViewById<ImageView>(R.id.backgroundImageLevel)
+        background.setImageResource(resources.getIdentifier("level_${currentWeather.toString().lowercase()}", "drawable", this.packageName))
+
         createBoard(widthBoard)
-        buttonList.forEach {
-            it.forEach {
-                it.update(null,null)
+
+        buttonList.forEach { row ->
+            row.forEach { cell ->
+                cell.update(null,null)
             }
         }
     }
@@ -53,16 +68,17 @@ class LevelActivity : AppCompatActivity(), Observer{
         linearLayout.layoutParams = params
         val table = findViewById<TableLayout>(R.id.gameBoardTable)
 
-
         for (row in 0 until height) {
             val buttonListRow : MutableList<CellButton> = mutableListOf()
             val currentRow = TableRow(this)
 
             for (button in 0 until width) {
-                val currentButton = CellButton(this, currentRow, widthBoard / width, this)
+
+                val currentButton = CellButton(this, currentRow, widthBoard / width)
 
                 buttonListRow.add(currentButton)
             }
+
             buttonList.add(buttonListRow)
             table.addView(currentRow)
         }
