@@ -7,12 +7,15 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import com.example.tptdl.weatherAPI.WeatherState
 
 class MapActivity : AppCompatActivity() {
 
     private val levelTexts : MutableList<TextView> = mutableListOf()
     private val levelButtons : MutableList<ImageButton> = mutableListOf()
+    private lateinit var upMapButton : ImageButton
+    private lateinit var downMapButton : ImageButton
     private var mapFase = 0
     private val lastAvailableLevel : Int = 15
     private val amountOfVisibleLevels = 10
@@ -33,6 +36,9 @@ class MapActivity : AppCompatActivity() {
             levelTexts.add(findViewById<View>(resources.getIdentifier("buttonTextLevel$i", "id", this.packageName)) as TextView)
         }
 
+        upMapButton = findViewById(R.id.upMapButton)
+        downMapButton = findViewById(R.id.downMapButton)
+
         this.upadateAvailableLevels()
     }
 
@@ -49,6 +55,14 @@ class MapActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun reachedTop(): Boolean {
+        return levelTexts.last().text.toString().toInt() > lastAvailableLevel
+    }
+
+    private fun reachedBottom(): Boolean {
+        return levelTexts.first().text == "1"
+    }
+
     private fun upadateAvailableLevels() {
         for (i in 0 until amountOfVisibleLevels) {
             if (levelTexts[i].text.toString().toInt() > lastAvailableLevel) {
@@ -60,6 +74,9 @@ class MapActivity : AppCompatActivity() {
                 levelButtons[i].alpha = 1f
             }
         }
+
+        upMapButton.isVisible = !reachedTop()
+        downMapButton.isVisible = !reachedBottom()
     }
 
     private fun levelUp(levelText: TextView) {
@@ -72,7 +89,7 @@ class MapActivity : AppCompatActivity() {
 
     fun upMap(view: View) {
 
-        if (levelTexts.last().text.toString().toInt() > lastAvailableLevel) return
+        if (reachedTop()) return
 
         for (levelText in levelTexts) levelUp(levelText)
 
@@ -82,7 +99,7 @@ class MapActivity : AppCompatActivity() {
     }
 
     fun downMap(view: View) {
-        if (levelTexts.first().text == "1") return
+        if (reachedBottom()) return
 
         for (levelText in levelTexts) levelDown(levelText)
 

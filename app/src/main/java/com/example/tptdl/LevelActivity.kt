@@ -33,14 +33,7 @@ class LevelActivity : AppCompatActivity(), Observer{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_level)
-
-        gameboard = GameBoard(width, height, Normal(), Score(), MovementsCounter())
-        gameboard.addObserver(this)
-
         supportActionBar?.hide()
-
-        gameboard = GameBoard(height, width, Normal(), Score(), MovementsCounter())
-
 
         val displayMetrics = DisplayMetrics()
         windowManager.getDefaultDisplay().getMetrics(displayMetrics) //TODO usar cosas no deprecadas
@@ -51,6 +44,9 @@ class LevelActivity : AppCompatActivity(), Observer{
         currentWeather = intent.getSerializableExtra("weather") as WeatherState
         val background = findViewById<ImageView>(R.id.backgroundImageLevel)
         background.setImageResource(resources.getIdentifier("level_${currentWeather.toString().lowercase()}", "drawable", this.packageName))
+
+        gameboard = GameBoard(width, height, currentWeather, Score(), MovementsCounter())
+        gameboard.addObserver(this)
 
         createBoard(widthBoard)
 

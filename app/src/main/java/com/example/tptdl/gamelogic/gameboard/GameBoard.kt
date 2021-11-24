@@ -27,11 +27,23 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
     }
 
     fun printBoard() {
+
+        val maxLenght = 10 //Strawberry
+        val division = "-------------------------------------------------\n"
+        var board : String = division
+
         for (i in 0 until height) {
-            for (j in 0 until width)
-                print((((myColumns[j]).getCellAtIndex(i)).getCellValue()).toString() + " | ")
-            print("\n")
+            for (j in 0 until width) {
+                val fruit = (((myColumns[j]).getCellAtIndex(i)).getCellValue()).toString()
+                var spaces = ""
+                for (k in 0 until maxLenght - fruit.length) spaces += " "
+
+                board += " $fruit$spaces|"
+            }
+            board += "\n"
         }
+        board += division
+        println(board)
     }
 
     /* Function will receive a Movement (obtained by view controllers) composed of the x and y
@@ -49,6 +61,7 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
         switchCellValues(cellToSwitch, cellToSwitchWith)
         lastMovement = movement
         movementCounter.executeMovement()
+        printBoard()
         notifyObservers()
     }
 
@@ -310,6 +323,9 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
         val direction = getDirection(cell1, cell2)
         val movement = Movement(getCellCoords(cell1), direction)
         doMovement(movement)
+
+        if (!checkForCombos()) undoLastMovement()
+
         return true
     }
 }

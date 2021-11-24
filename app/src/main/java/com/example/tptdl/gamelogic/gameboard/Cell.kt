@@ -13,6 +13,8 @@ class Cell(var value : Token) : Observable() {
 
     fun setCellValue(newValue : Token) {
         value = newValue
+        setChanged()
+        notifyObservers()
     }
 
     fun getCellValue() : Token {

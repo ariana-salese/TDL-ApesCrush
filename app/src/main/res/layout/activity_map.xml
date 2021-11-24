@@ -303,7 +303,7 @@
         app:layout_constraintTop_toTopOf="@+id/buttonLevel10" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/upMapButton"
         android:layout_width="105dp"
         android:layout_height="33dp"
         android:backgroundTint="#92FAFAFA"
