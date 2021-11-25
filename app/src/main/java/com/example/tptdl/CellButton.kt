@@ -55,5 +55,11 @@ class CellButton(context : LevelActivity, row : TableRow, lenght : Int) : Observ
         button.setBackgroundColor(Color.parseColor("#ffffff"))
         button.background.alpha = 100
     }
+
+    // Variable color will be in hex, opa
+    fun changeBackground(color : String, opacity : Int) {
+        button.setBackgroundColor(Color.parseColor(color))
+        button.background.alpha = opacity
+    }
 }
 

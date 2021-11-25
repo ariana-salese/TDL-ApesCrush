@@ -85,7 +85,7 @@ class LevelActivity : AppCompatActivity(), Observer{
     fun setClicked(button : CellButton) {
 
         if (clickedButton == null) {
-            println("Clicked is null")
+            // println("Clicked is null")
             button.setSelected()
             clickedButton = button
             return
