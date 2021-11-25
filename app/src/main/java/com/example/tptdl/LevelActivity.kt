@@ -85,18 +85,17 @@ class LevelActivity : AppCompatActivity(), Observer{
     fun setClicked(button : CellButton) {
 
         if (clickedButton == null) {
-            // println("Clicked is null")
-            button.setSelected()
+            button.changeBackground("#d9d9d9", 100)
             clickedButton = button
             return
         }
 
-        clickedButton!!.setUnselected()
+        clickedButton!!.changeBackground("#ffffff", 100)
 
         clickedButton = if(gameboard.tryMovement(clickedButton!!.getCell(), button.getCell())){
             null
         } else{
-            button.setSelected()
+            button.changeBackground("#d9d9d9", 100)
             button
         }
     }

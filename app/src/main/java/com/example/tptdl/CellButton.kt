@@ -46,16 +46,6 @@ class CellButton(context : LevelActivity, row : TableRow, lenght : Int) : Observ
         return cell
     }
 
-    fun setSelected() {
-        button.setBackgroundColor(Color.parseColor("#d9d9d9"))
-        button.background.alpha = 100
-    }
-
-    fun setUnselected() {
-        button.setBackgroundColor(Color.parseColor("#ffffff"))
-        button.background.alpha = 100
-    }
-
     // Variable color will be in hex, opa
     fun changeBackground(color : String, opacity : Int) {
         button.setBackgroundColor(Color.parseColor(color))
