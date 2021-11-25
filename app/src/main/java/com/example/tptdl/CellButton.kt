@@ -38,10 +38,22 @@ class CellButton(context : LevelActivity, row : TableRow, lenght : Int) : Observ
 
     override fun update(o: Observable?, arg: Any?) {
         button.setImageResource(cell.getCellValue().getPath())
+        button.setBackgroundColor(Color.parseColor("#ffffff"))
+        button.background.alpha = 100
     }
 
     fun getCell() : Cell {
         return cell
+    }
+
+    fun setSelected() {
+        button.setBackgroundColor(Color.parseColor("#d9d9d9"))
+        button.background.alpha = 100
+    }
+
+    fun setUnselected() {
+        button.setBackgroundColor(Color.parseColor("#ffffff"))
+        button.background.alpha = 100
     }
 }
 

@@ -83,14 +83,22 @@ class LevelActivity : AppCompatActivity(), Observer{
     }
 
     fun setClicked(button : CellButton) {
+
         if (clickedButton == null) {
+            println("Clicked is null")
+            button.setSelected()
             clickedButton = button
             return
         }
-        if (gameboard.tryMovement(clickedButton!!.getCell(), button.getCell())) {
-            clickedButton = null
+
+        clickedButton!!.setUnselected()
+
+        clickedButton = if(gameboard.tryMovement(clickedButton!!.getCell(), button.getCell())){
+            null
+        } else{
+            button.setSelected()
+            button
         }
-        clickedButton = button
     }
 
     override fun update(o: Observable?, arg: Any?) {
