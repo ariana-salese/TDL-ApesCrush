@@ -9,4 +9,8 @@ class Score(val winThreshold : Int = 0) {
     fun add(pointValue: Int) {
         currentPoints += pointValue
     }
+
+    fun reset() {
+        currentPoints = 0
+    }
 }

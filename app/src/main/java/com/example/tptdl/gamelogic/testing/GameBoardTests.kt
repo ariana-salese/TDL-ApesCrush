@@ -10,6 +10,8 @@ import com.example.tptdl.gamelogic.tokens.Banana
 import com.example.tptdl.gamelogic.tokens.TokenRandomizer
 import com.example.tptdl.weatherAPI.Normal
 
+
+/*
 fun test01ValuesAreProperlyAssigned() {
     println("---------- Test 01 ----------")
     val board = GameBoard(4, 2, Normal(), Score(), MovementsCounter())
@@ -93,6 +95,7 @@ fun test07boardComboDisplayTest() {
 
 }
 
+
 fun main() {
     test01ValuesAreProperlyAssigned()
     test02tokenRandomizerTest()
@@ -102,5 +105,6 @@ fun main() {
     test06boardRemovalDisplayTest()
     test07boardComboDisplayTest()
 }
+*/
 
 

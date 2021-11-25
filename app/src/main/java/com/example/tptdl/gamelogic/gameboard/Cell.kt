@@ -54,7 +54,8 @@ class Cell(var value : Token) : Observable() {
 
     fun switchValues(cell: Cell) {
         val currentValue = value
-        value = cell.getCellValue()
+        setCellValue(cell.getCellValue())
+        //value = cell.getCellValue()
         cell.setCellValue(currentValue)
     }
 

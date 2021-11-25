@@ -19,6 +19,8 @@ import android.graphics.PixelFormat.TRANSPARENT
 
 import android.widget.LinearLayout
 import com.example.tptdl.weatherAPI.WeatherState
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import java.util.*
 
 
@@ -82,7 +84,7 @@ class LevelActivity : AppCompatActivity(), Observer{
         gameboard.printBoard()
     }
 
-    fun setClicked(button : CellButton) {
+    suspend fun setClicked(button : CellButton) {
 
         if (clickedButton == null) {
             button.changeBackground("#d9d9d9", 100)
@@ -92,12 +94,29 @@ class LevelActivity : AppCompatActivity(), Observer{
 
         clickedButton!!.changeBackground("#ffffff", 100)
 
-        clickedButton = if(gameboard.tryMovement(clickedButton!!.getCell(), button.getCell())){
+        val movementDone = GlobalScope.async { gameboard.tryMovement(clickedButton!!.getCell(), button.getCell()) }
+
+        println("DISABLE")
+        buttonList.forEach {
+            it.forEach { cellButton->
+                cellButton.disable()
+            }
+        }
+
+        clickedButton = if(movementDone.await()) {
             null
-        } else{
+        } else {
             button.changeBackground("#d9d9d9", 100)
             button
         }
+
+        println("ENABLE")
+        buttonList.forEach {
+            it.forEach { cellButton->
+                cellButton.enable()
+            }
+        }
+
     }
 
     override fun update(o: Observable?, arg: Any?) {

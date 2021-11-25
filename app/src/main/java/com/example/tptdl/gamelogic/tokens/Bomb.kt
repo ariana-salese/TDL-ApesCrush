@@ -6,6 +6,7 @@ import com.example.tptdl.gamelogic.gameboard.GameBoard
 // For now this class will implement Token
 class Bomb(private var explosionRadius : Int = 3) : Token() {   // explosionRadius is a 3x3 by default, it should always be an odd number
     var canBeExploded = true
+
     override fun toString() : String {
         return "Bomb"
     }

@@ -8,10 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginLeft
 import androidx.core.view.setPadding
 import com.example.tptdl.gamelogic.gameboard.Cell
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 
-class CellButton(context : LevelActivity, row : TableRow, lenght : Int) : Observer {
+class CellButton(val context : LevelActivity, row : TableRow, lenght : Int) : Observer {
     //TODO que reciba context : AppCompatActivity
     private var button : ImageButton = ImageButton(context)
 
@@ -28,7 +30,7 @@ class CellButton(context : LevelActivity, row : TableRow, lenght : Int) : Observ
         params.width = lenght
 
         button.setOnClickListener {
-            context.setClicked(this)
+            GlobalScope.launch { context.setClicked(this@CellButton) }
         }
     }
 
@@ -37,9 +39,11 @@ class CellButton(context : LevelActivity, row : TableRow, lenght : Int) : Observ
     }
 
     override fun update(o: Observable?, arg: Any?) {
-        button.setImageResource(cell.getCellValue().getPath())
-        button.setBackgroundColor(Color.parseColor("#ffffff"))
-        button.background.alpha = 100
+        context.runOnUiThread {
+            button.setImageResource(cell.getCellValue().getPath())
+            button.setBackgroundColor(Color.parseColor("#ffffff"))
+            button.background.alpha = 100
+        }
     }
 
     fun getCell() : Cell {
@@ -50,6 +54,14 @@ class CellButton(context : LevelActivity, row : TableRow, lenght : Int) : Observ
     fun changeBackground(color : String, opacity : Int) {
         button.setBackgroundColor(Color.parseColor(color))
         button.background.alpha = opacity
+    }
+
+    fun disable() {
+        button.isClickable = false
+    }
+
+    fun enable() {
+        button.isClickable = true
     }
 }
 

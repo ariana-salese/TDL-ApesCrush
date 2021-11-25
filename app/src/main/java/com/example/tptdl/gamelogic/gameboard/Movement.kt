@@ -50,5 +50,5 @@ class Movement(private val cellToMove : Pair<Int, Int>, private val direction : 
             else -> throw Exception("Invalid direction")
         }
         return Movement(oppositeCoords, oppositeDirection)
-    }
+    }//TODO Repensar utilidad de este metodo @Alejo
 }
