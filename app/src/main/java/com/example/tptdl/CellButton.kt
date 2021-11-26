@@ -4,8 +4,6 @@ import android.graphics.Color
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TableRow
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.marginLeft
 import androidx.core.view.setPadding
 import com.example.tptdl.gamelogic.gameboard.Cell
 import kotlinx.coroutines.GlobalScope
@@ -30,7 +28,7 @@ class CellButton(val context : LevelActivity, row : TableRow, lenght : Int) : Ob
         params.width = lenght
 
         button.setOnClickListener {
-            GlobalScope.launch { context.setClicked(this@CellButton) }
+            GlobalScope.launch { context.makeMovement(this@CellButton) }
         }
     }
 

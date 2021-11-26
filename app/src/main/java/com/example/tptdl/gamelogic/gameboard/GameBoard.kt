@@ -7,8 +7,7 @@ import com.example.tptdl.gamelogic.tokens.Void
 import kotlinx.coroutines.*
 
 // "internal" visibility modifier lets me access the class' parameters as long as it's from the same module
-class GameBoard(internal val width : Int, internal val height : Int, private val ruleSet : RuleSet, private val score : Score, private val movementCounter : MovementsCounter) :
-    java.util.Observable() {    // GameBoard probably shouldn't have Score or MovementsCounter in it, LevelActivity should
+class GameBoard(private val width : Int, private val height : Int, private val ruleSet : RuleSet, private val score: Score) {
 
     private var myColumns : MutableList<Column> = mutableListOf()
     private var myRows : MutableList<Row> = mutableListOf()
@@ -29,26 +28,6 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
         }
     }
 
-    fun printBoard() {
-
-        val maxLenght = 10 //Strawberry
-        val division = "-------------------------------------------------\n"
-        var board : String = division
-
-        for (i in 0 until height) {
-            for (j in 0 until width) {
-                val fruit = (((myColumns[j]).getCellAtIndex(i)).getCellValue()).toString()
-                var spaces = ""
-                for (k in 0 until maxLenght - fruit.length) spaces += " "
-
-                board += " $fruit$spaces|"
-            }
-            board += "\n"
-        }
-        board += division
-        println(board)
-    } //TODO Eliminar
-
     /* Function will receive a Movement (obtained by view controllers) composed of the x and y
        coordinates of the cell to move, and a direction in which to move the selected cell. After
        this function is called, the controller will checkForCombos(), if none are found it will call
@@ -63,13 +42,10 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
         val cellToSwitch = obtainCell(cellToSwitchCoords)
         val cellToSwitchWith = obtainCell(cellToSwitchWithCoords)
 
-        switchCellValues(cellToSwitch, cellToSwitchWith)
         delay(500L)
+        switchCellValues(cellToSwitch, cellToSwitchWith)
 
         lastMovement = movement
-        movementCounter.executeMovement()
-        printBoard()
-        //notifyObservers()
     }
 
     /* Switches values of 2 different Cell's (passed through parameters as a Pair of Int's,
@@ -78,27 +54,6 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
     fun switchCellValues(selectedCell: Cell, cellToSwitch: Cell) {
         selectedCell.switchValues(cellToSwitch)
     }
-
-    // Switches the position of 2 cells in the GameBoard (Doesn't accept invalid switches).
-    private fun switchCells(selectedCellCoords: Pair<Int, Int>, cellToSwitchCoords: Pair<Int, Int>) {
-        val (xSelected, ySelected) = selectedCellCoords
-        val (xToSwitch, yToSwitch) = cellToSwitchCoords
-        val selectedCell = obtainCell(selectedCellCoords)
-        val cellToSwitch = obtainCell(cellToSwitchCoords)
-
-        if ((xSelected - xToSwitch) == 0) { // vertical switch
-            myColumns[xSelected].switchCells(ySelected, yToSwitch)
-            myRows[ySelected].setCellAtIndex(cellToSwitch, xSelected)
-            myRows[yToSwitch].setCellAtIndex(selectedCell, xSelected)
-        }
-        else if (ySelected - yToSwitch == 0) { // horizontal switch
-            myRows[ySelected].switchCells(xSelected, xToSwitch)
-            myColumns[xSelected].setCellAtIndex(cellToSwitch, ySelected)
-            myRows[yToSwitch].setCellAtIndex(selectedCell, ySelected)
-        }
-        else
-            throw Exception("Invalid switch")
-    } //TODO Repensar utilidad de este metodo @Alejo
 
     /* After the controller has called the function moveCell(), it will call checkForCombos() if
        checkForCombos finds any combos, it will execute them leaving Void in the spots where there
@@ -176,6 +131,10 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
         }
     }
 
+    fun getScore(): Score {
+        return score
+    }
+
     /* Receives a list of cells, function will check for each cell individually if there's an explosive
        in any of it's four adjacent directions, if there is one it will add it to a list which is returned
        at the end of the function.
@@ -237,10 +196,81 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
     // Undoes the last movement (does it again which causes the board to return to it's previous state)
     private suspend fun undoLastMovement() {
         this.doMovement(lastMovement)
-        movementCounter.undoMovement()
+        //movementCounter.undoMovement()
     }
 
-    fun getScore(): Score { return score }
+    fun linkObservers(buttonList: MutableList<MutableList<CellButton>>) {
+        for (row in 0 until buttonList.size) {
+
+            for (col in 0 until buttonList[row].size) {
+                val cell = myRows[row].getCellAtIndex(col)
+                val button = buttonList[row][col]
+                cell.addObserver(button)
+                button.setCell(cell)
+            }
+        }
+    }
+
+    private fun getAdjacents(cell : Cell): MutableList<Cell> {
+        val cellCoords = getCellCoords(cell)
+        return mutableListOf(topCell(cellCoords), bottomCell(cellCoords), rightCell(cellCoords), leftCell(cellCoords))
+    }
+
+    private fun isAdjacent(cell1 : Cell, cell2 : Cell) : Boolean {
+        val adjacentList = getAdjacents(cell1)
+        return adjacentList.contains(cell2)
+    }
+
+    private fun getDirection(cell1 : Cell, cell2 : Cell) : String {
+        val adjacentList = getAdjacents(cell1)
+        val stringsList = mutableListOf("Up", "Down", "Right", "Left")
+        for (i in 0 until adjacentList.size) {
+            if (adjacentList[i] == cell2) {
+                println(stringsList[i])
+                return stringsList[i]
+            }
+        }
+        println("NotValid")
+        return "NotValid"
+    }
+
+    fun tryMovement(cell1 : Cell, cell2 : Cell) : Boolean {
+        if(!isAdjacent(cell1, cell2)) return false
+
+        val direction = getDirection(cell1, cell2)
+        val movement = Movement(getCellCoords(cell1), direction)
+
+        runBlocking {
+            doMovement(movement)
+            if (!checkForCombos(false)) undoLastMovement()
+        }
+
+        println("END OF MOVEMENT")
+        println("PUNTOS ACTUALES: " + score.currentPoints)
+        return true
+    }
+
+    //                  TESTING
+
+    fun printBoard() {
+
+        val maxLenght = 10 //Strawberry
+        val division = "-------------------------------------------------\n"
+        var board : String = division
+
+        for (i in 0 until height) {
+            for (j in 0 until width) {
+                val fruit = (((myColumns[j]).getCellAtIndex(i)).getCellValue()).toString()
+                var spaces = ""
+                for (k in 0 until maxLenght - fruit.length) spaces += " "
+
+                board += " $fruit$spaces|"
+            }
+            board += "\n"
+        }
+        board += division
+        println(board)
+    } //TODO Eliminar
 
     internal fun repopulateBoardTESTING() {  // internal function to test repopulateBoard()
         this.dropCurrentTokens()
@@ -289,55 +319,26 @@ class GameBoard(internal val width : Int, internal val height : Int, private val
         myRows[y].setCellAtIndex(cell, x)
     }
 
-    fun linkObservers(buttonList: MutableList<MutableList<CellButton>>) {
-        for (row in 0 until buttonList.size) {
+    //                  ???
 
-            for (col in 0 until buttonList[row].size) {
-                val cell = myRows[row].getCellAtIndex(col)
-                val button = buttonList[row][col]
-                cell.addObserver(button)
-                button.setCell(cell)
+    // Switches the position of 2 cells in the GameBoard (Doesn't accept invalid switches).
+    private fun switchCells(selectedCellCoords: Pair<Int, Int>, cellToSwitchCoords: Pair<Int, Int>) {
+        val (xSelected, ySelected) = selectedCellCoords
+        val (xToSwitch, yToSwitch) = cellToSwitchCoords
+        val selectedCell = obtainCell(selectedCellCoords)
+        val cellToSwitch = obtainCell(cellToSwitchCoords)
 
-            }
+        if ((xSelected - xToSwitch) == 0) { // vertical switch
+            myColumns[xSelected].switchCells(ySelected, yToSwitch)
+            myRows[ySelected].setCellAtIndex(cellToSwitch, xSelected)
+            myRows[yToSwitch].setCellAtIndex(selectedCell, xSelected)
         }
-    }
-
-    private fun getAdjacents(cell : Cell): MutableList<Cell> {
-        val cellCoords = getCellCoords(cell)
-        return mutableListOf(topCell(cellCoords), bottomCell(cellCoords), rightCell(cellCoords), leftCell(cellCoords))
-    }
-
-    private fun isAdjacent(cell1 : Cell, cell2 : Cell) : Boolean {
-        val adjacentList = getAdjacents(cell1)
-        return adjacentList.contains(cell2)
-    }
-
-    private fun getDirection(cell1 : Cell, cell2 : Cell) : String {
-        val adjacentList = getAdjacents(cell1)
-        val stringsList = mutableListOf("Up", "Down", "Right", "Left")
-        for (i in 0 until adjacentList.size) {
-            if (adjacentList[i] == cell2) {
-                println(stringsList[i])
-                return stringsList[i]
-            }
+        else if (ySelected - yToSwitch == 0) { // horizontal switch
+            myRows[ySelected].switchCells(xSelected, xToSwitch)
+            myColumns[xSelected].setCellAtIndex(cellToSwitch, ySelected)
+            myRows[yToSwitch].setCellAtIndex(selectedCell, ySelected)
         }
-        println("NotValid")
-        return "NotValid"
-    }
-
-    fun tryMovement(cell1 : Cell, cell2 : Cell) : Boolean {
-        if(!isAdjacent(cell1, cell2)) return false
-
-        val direction = getDirection(cell1, cell2)
-        val movement = Movement(getCellCoords(cell1), direction)
-
-        runBlocking {
-            doMovement(movement)
-            if (!checkForCombos(false)) undoLastMovement()
-        }
-
-        println("END OF MOVEMENT")
-        println("PUNTOS ACTUALES: " + score.currentPoints)
-        return true
-    }
+        else
+            throw Exception("Invalid switch")
+    } //TODO Repensar utilidad de este metodo @Alejo
 }

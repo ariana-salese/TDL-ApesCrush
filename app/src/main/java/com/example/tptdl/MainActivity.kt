@@ -178,10 +178,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         }
     }
 
-    fun clickOnPlayButton(view: View) {
-        println(currentWeather)
-    }
-
     //TODO chequear utilidad/eliminar ---------------------
     /**
      * Called when the user navigates away from the app but might come back

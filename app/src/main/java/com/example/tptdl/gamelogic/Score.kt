@@ -1,9 +1,10 @@
 package com.example.tptdl.gamelogic
 
-class Score(val winThreshold : Int = 0) {
+class Score(val winThreshold : Int) {
     var currentPoints = 0
-    fun checkIfWin(currentPoints : Int) : Boolean {
-        return (currentPoints >= winThreshold)
+
+    fun checkIfWin() : Boolean {
+        return currentPoints >= winThreshold
     }
 
     fun add(pointValue: Int) {
