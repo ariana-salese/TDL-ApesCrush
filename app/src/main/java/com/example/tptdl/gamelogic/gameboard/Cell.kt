@@ -1,8 +1,5 @@
 package com.example.tptdl.gamelogic.gameboard
 
-import androidx.databinding.BaseObservable
-import androidx.databinding.Bindable
-import androidx.databinding.ObservableField
 import com.example.tptdl.gamelogic.Score
 import com.example.tptdl.gamelogic.tokens.Token
 import com.example.tptdl.gamelogic.tokens.TokenRandomizer
@@ -47,9 +44,9 @@ class Cell(var value : Token) : Observable() {
         value.explode(cellCoords, gameBoard)
     }
 
-    fun pop(score: Score) {
-        value.pop(score)
-        this.emptyCell()
+    fun pop(score : Score? = null) {
+        score!!.add(value.getValue())
+        emptyCell()
     }
 
     fun switchValues(cell: Cell) {

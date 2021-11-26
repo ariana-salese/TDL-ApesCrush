@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         levelButton.setOnClickListener {
             val intent = Intent(this, LevelActivity::class.java)
             intent.putExtra("weather", currentWeather)
+            intent.putExtra("levelNumber", 1)
             startActivity(intent)
         }
 
@@ -186,9 +187,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
     }
 
-    fun clickOnPlayButton(view: View) {
-        println(currentWeather)
-    }
     /**
      * Called when the user navigates away from the app but might come back
      */
