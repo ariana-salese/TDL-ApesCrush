@@ -17,8 +17,8 @@ class MapActivity : AppCompatActivity() {
     private lateinit var upMapButton : ImageButton
     private lateinit var downMapButton : ImageButton
     private var mapFase = 0
-    private val lastAvailableLevel : Int = 15
-    private val amountOfVisibleLevels = 10
+    private lateinit var userData : UserData
+    private val AMOUNT_OF_VISIBLE_LEVELS = 10
     private lateinit var currentWeather: WeatherState
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,12 +26,15 @@ class MapActivity : AppCompatActivity() {
         setContentView(R.layout.activity_map)
         supportActionBar?.hide()
 
+        userData = UserData(this)
+        println("MAP ACTIVITY (onCreate): ${userData.getLastAvailableLevel()}") //TODO eliminar
+
         //Setting background according to weather
         currentWeather = intent.getSerializableExtra("weather") as WeatherState
         val background: ImageView = findViewById(R.id.backgroundImage)
         background.setImageResource(resources.getIdentifier(currentWeather.getMapBackgroundIdName(), "drawable", this.packageName))
 
-        for (i in 1 until amountOfVisibleLevels + 1) {
+        for (i in 1 until AMOUNT_OF_VISIBLE_LEVELS + 1) {
             levelButtons.add(findViewById<View>(resources.getIdentifier("buttonLevel$i", "id", this.packageName)) as ImageButton)
             levelTexts.add(findViewById<View>(resources.getIdentifier("buttonTextLevel$i", "id", this.packageName)) as TextView)
         }
@@ -39,15 +42,14 @@ class MapActivity : AppCompatActivity() {
         upMapButton = findViewById(R.id.upMapButton)
         downMapButton = findViewById(R.id.downMapButton)
 
-        this.upadateAvailableLevels()
+        this.updateAvailableLevels()
     }
 
     fun clickOnLevelButton(view: View) {
-        //TODO crear un levelActivity
 
-        val levelNumber = view.contentDescription.toString().toInt() + mapFase * amountOfVisibleLevels
+        val levelNumber = view.contentDescription.toString().toInt() + mapFase * AMOUNT_OF_VISIBLE_LEVELS
 
-        println("Se clickeo nivel: $levelNumber")
+        println("Se clickeo nivel: $levelNumber")//TODO eliminar
 
         val intent = Intent(this, LevelActivity::class.java)
         intent.putExtra("weather", currentWeather)
@@ -56,16 +58,16 @@ class MapActivity : AppCompatActivity() {
     }
 
     private fun reachedTop(): Boolean {
-        return levelTexts.last().text.toString().toInt() > lastAvailableLevel
+        return levelTexts.last().text.toString().toInt() >= userData.getLastAvailableLevel()
     }
 
     private fun reachedBottom(): Boolean {
         return levelTexts.first().text == "1"
     }
 
-    private fun upadateAvailableLevels() {
-        for (i in 0 until amountOfVisibleLevels) {
-            if (levelTexts[i].text.toString().toInt() > lastAvailableLevel) {
+    private fun updateAvailableLevels() {
+        for (i in 0 until AMOUNT_OF_VISIBLE_LEVELS) {
+            if (levelTexts[i].text.toString().toInt() > userData.getLastAvailableLevel()) {
                 levelButtons[i].isClickable = false
                 levelButtons[i].alpha = 0.5f
             }
@@ -80,22 +82,21 @@ class MapActivity : AppCompatActivity() {
     }
 
     private fun levelUp(levelText: TextView) {
-        levelText.text = (levelText.text.toString().toInt( ) + amountOfVisibleLevels).toString()
+        levelText.text = (levelText.text.toString().toInt( ) + AMOUNT_OF_VISIBLE_LEVELS).toString()
     }
 
     private fun levelDown(levelText: TextView) {
-        levelText.text = (levelText.text.toString().toInt( ) - amountOfVisibleLevels).toString()
+        levelText.text = (levelText.text.toString().toInt( ) - AMOUNT_OF_VISIBLE_LEVELS).toString()
     }
 
     fun upMap(view: View) {
-
         if (reachedTop()) return
 
         for (levelText in levelTexts) levelUp(levelText)
 
         mapFase += 1
 
-        this.upadateAvailableLevels()
+        this.updateAvailableLevels()
     }
 
     fun downMap(view: View) {
@@ -105,38 +106,13 @@ class MapActivity : AppCompatActivity() {
 
         mapFase -= 1
 
-        this.upadateAvailableLevels()
-    }
-
-    /** Lifecycle Methods **/
-    override fun onStart() {
-        super.onStart()
-        println("START MAP")
+        this.updateAvailableLevels()
     }
 
     override fun onResume() {
+        this.updateAvailableLevels()
+        println("MAP ACTIVITY (onResume): ${userData.getLastAvailableLevel()}") //TODO eliminar
         super.onResume()
-        println("RESUME MAP")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        println("PAUSE MAP")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        println("STOP MAP")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        println("DESTROY MAP")
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        println("RESTART MAP")
     }
 }
 

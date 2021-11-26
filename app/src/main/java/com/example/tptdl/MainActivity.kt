@@ -27,13 +27,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
     var weatherService: WeatherService? = null
     var isCheckingForPermissions = false
-
-    private lateinit var map: MapActivity
-    private lateinit var level: LevelActivity
-    private lateinit var settings: SettingsActivity
-
     private lateinit var currentWeather: WeatherState
-
     // Contains all the views
     //TODO poner bien las bindings para acceder a las views
     //private lateinit var binding: ActivityMainBinding
@@ -46,11 +40,11 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         askForForegroundPermissions()
         if(checkForPermissions()) askForBackgroundPermission()
 
-
         val levelButton: Button = findViewById(R.id.play_button)
         levelButton.setOnClickListener {
             val intent = Intent(this, LevelActivity::class.java)
             intent.putExtra("weather", currentWeather)
+            intent.putExtra("levelNumber", UserData(this).getLastAvailableLevel())
             startActivity(intent)
         }
 
@@ -173,8 +167,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         }
     }
 
-
-    fun setWeatherIndicator() {
+    private fun setWeatherIndicator() {
 
         val weatherIcon : ImageView = findViewById(R.id.weatherIcon)
         val weatherText : TextView = findViewById(R.id.weatherText)
@@ -183,12 +176,13 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             weatherIcon.setImageResource(resources.getIdentifier(currentWeather.toString().lowercase(), "drawable", this.packageName))
             weatherText.text = currentWeather.toString()
         }
-
     }
 
     fun clickOnPlayButton(view: View) {
         println(currentWeather)
     }
+
+    //TODO chequear utilidad/eliminar ---------------------
     /**
      * Called when the user navigates away from the app but might come back
      */
@@ -223,7 +217,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
     override fun onDestroy() {
         println("DESTROY MAIN")
-        Toast.makeText(this, "DESTROY MAIN", Toast.LENGTH_SHORT).show()
         super.onDestroy()
     }
 
@@ -231,6 +224,5 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         super.onRestart()
         println("RESTART MAIN")
     }
-
 }
 
