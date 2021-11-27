@@ -1,6 +1,6 @@
 package com.example.tptdl.gamelogic
 
-class MovementsCounter(var remainingMovements : Int = 10) {
+class MovementsCounter(private var remainingMovements : Int = 20) {
     fun checkIfLoss() : Boolean {
         println("Current movements left: $remainingMovements")
         return this.remainingMovements <= 0
@@ -12,5 +12,9 @@ class MovementsCounter(var remainingMovements : Int = 10) {
 
     fun undoMovement() {
         this.remainingMovements++
+    }
+
+    fun getRemainingMovements() : Int {
+        return remainingMovements
     }
 }

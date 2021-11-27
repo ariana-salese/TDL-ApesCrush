@@ -1,10 +1,13 @@
 package com.example.tptdl.gamelogic.tokens
 
-class TokenRandomizer(private val bombAppearanceRate : Int) {     // bombAppearanceRate is expressed in percentages (0 to 100)
+import com.example.tptdl.gamelogic.gameboard.RuleSet
+
+class TokenRandomizer(private val ruleSet: RuleSet) {     // bombAppearanceRate is expressed in percentages (0 to 100)
     private val allTokens : MutableList<Token> = mutableListOf()
     private val allFruits : MutableList<Fruit> = mutableListOf()
     private val numberOfTokens : Int = 6    // Void() Token is excluded from this, in fact, it's excluded from this whole class
     private val numberOfFruits : Int = 5
+    private val bombAppearanceRate = ruleSet.obtainBombRates()
 
 
     init {
@@ -18,12 +21,12 @@ class TokenRandomizer(private val bombAppearanceRate : Int) {     // bombAppeara
         val amountOfFruitTokens = allTokens.size
         if (bombAppearanceRate == 100) {    // To prevent division by zero
             for (i in 0 until 100) {
-                allTokens.add(Bomb())
+                allTokens.add(Bomb(ruleSet))
             }
         }
         else {
             for (i in 0 until ((amountOfFruitTokens * bombAppearanceRate) / (100 - bombAppearanceRate))) {
-                allTokens.add(Bomb())
+                allTokens.add(Bomb(ruleSet))
             }
         }
         allFruits.add(Apple())

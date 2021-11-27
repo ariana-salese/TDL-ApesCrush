@@ -1,7 +1,6 @@
 package com.example.tptdl.gamelogic.gameboard
 
 import com.example.tptdl.CellButton
-import com.example.tptdl.gamelogic.MovementsCounter
 import com.example.tptdl.gamelogic.Score
 import com.example.tptdl.gamelogic.tokens.Void
 import kotlinx.coroutines.*
@@ -17,8 +16,8 @@ class GameBoard(private val width : Int, private val height : Int, private val r
        in case the board was generated with a combo already in it
      */
     init {
-        for (i in 1..width) myColumns.add(Column(height, ruleSet.obtainBombRates()))
-        for (i in 1..height) myRows.add(Row(width, ruleSet.obtainBombRates()))
+        for (i in 1..width) myColumns.add(Column(height, ruleSet))
+        for (i in 1..height) myRows.add(Row(width, ruleSet))
 
         this.updateRows()
 
@@ -42,8 +41,8 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         val cellToSwitch = obtainCell(cellToSwitchCoords)
         val cellToSwitchWith = obtainCell(cellToSwitchWithCoords)
 
-        delay(500L)
         switchCellValues(cellToSwitch, cellToSwitchWith)
+        delay(200L)
 
         lastMovement = movement
     }
@@ -59,7 +58,7 @@ class GameBoard(private val width : Int, private val height : Int, private val r
        checkForCombos finds any combos, it will execute them leaving Void in the spots where there
        was a combo. It will return false if no combos were found.
      */
-    suspend fun checkForCombos(initializing : Boolean) : Boolean {
+    suspend fun checkForCombos(initializing : Boolean = false) : Boolean {
         val markedForRemoval : MutableList<Cell> = mutableListOf()
         val bombsToExplode : MutableList<Cell> = mutableListOf()
 
@@ -125,10 +124,13 @@ class GameBoard(private val width : Int, private val height : Int, private val r
     /* If the user believes no more combos are available, shuffle() should be called, and a new
     board will be created.
      */
-    fun shuffle() {
+    suspend fun shuffle() {
         for (i in 0 until width) {
+            delay(150L)
             myColumns[i].shuffle()
         }
+        delay(100L)
+        checkForCombos()
     }
 
     fun getScore(): Score {
@@ -196,7 +198,6 @@ class GameBoard(private val width : Int, private val height : Int, private val r
     // Undoes the last movement (does it again which causes the board to return to it's previous state)
     private suspend fun undoLastMovement() {
         this.doMovement(lastMovement)
-        //movementCounter.undoMovement()
     }
 
     fun linkObservers(buttonList: MutableList<MutableList<CellButton>>) {
@@ -224,13 +225,11 @@ class GameBoard(private val width : Int, private val height : Int, private val r
     private fun getDirection(cell1 : Cell, cell2 : Cell) : String {
         val adjacentList = getAdjacents(cell1)
         val stringsList = mutableListOf("Up", "Down", "Right", "Left")
+
         for (i in 0 until adjacentList.size) {
-            if (adjacentList[i] == cell2) {
-                println(stringsList[i])
-                return stringsList[i]
-            }
+            if (adjacentList[i] == cell2) return stringsList[i]
         }
-        println("NotValid")
+
         return "NotValid"
     }
 
@@ -242,7 +241,7 @@ class GameBoard(private val width : Int, private val height : Int, private val r
 
         runBlocking {
             doMovement(movement)
-            if (!checkForCombos(false)) undoLastMovement()
+            if (!checkForCombos()) undoLastMovement()
         }
 
         println("END OF MOVEMENT")
@@ -250,7 +249,7 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         return true
     }
 
-    //                  TESTING
+    //                  TESTING //TODO borrar
 
     fun printBoard() {
 
@@ -341,4 +340,8 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         else
             throw Exception("Invalid switch")
     } //TODO Repensar utilidad de este metodo @Alejo
+
+    fun setRuleSetChange() {
+        ruleSet.weatherEvent(this)
+    }
 }

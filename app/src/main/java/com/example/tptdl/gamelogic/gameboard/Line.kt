@@ -1,15 +1,14 @@
 package com.example.tptdl.gamelogic.gameboard
 
-import com.example.tptdl.gamelogic.tokens.Banana
 import com.example.tptdl.gamelogic.tokens.TokenRandomizer
 
-open class Line(private val size : Int, private val bombAppearanceRate : Int) {
+open class Line(private val size : Int, private val ruleSet: RuleSet) {
     protected val myCells : MutableList<Cell> = mutableListOf()
-    protected val randomizer : TokenRandomizer = TokenRandomizer(bombAppearanceRate)
+    protected val randomizer : TokenRandomizer = TokenRandomizer(ruleSet)
 
     init {
         for (i in 0 until size) {
-            val cellToAdd = Cell(randomizer.randomToken())
+            val cellToAdd = Cell(randomizer.randomToken(), randomizer)
             myCells.add(cellToAdd)
         }
     }

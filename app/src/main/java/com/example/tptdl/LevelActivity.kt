@@ -111,14 +111,14 @@ class LevelActivity : AppCompatActivity(), Observer{
         println("ENABLE")
         enableCells()
 
-        if(movementDone.await()){
+        if(movementDone.await()) {
             if(game.checkWin()) gameWon()
             if(game.checkLose()) println("LOSE")
         }
 
     }
 
-    fun enableCells(){
+    fun enableCells() {
         buttonList.forEach {
             it.forEach { cellButton->
                 cellButton.enable()
@@ -126,7 +126,7 @@ class LevelActivity : AppCompatActivity(), Observer{
         }
     }
 
-    fun disableCells(){
+    fun disableCells() {
         buttonList.forEach {
             it.forEach { cellButton->
                 cellButton.disable()

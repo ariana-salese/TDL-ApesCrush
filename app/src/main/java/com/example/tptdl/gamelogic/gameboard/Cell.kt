@@ -6,7 +6,7 @@ import com.example.tptdl.gamelogic.tokens.TokenRandomizer
 import com.example.tptdl.gamelogic.tokens.Void
 import java.util.*
 
-class Cell(var value : Token) : Observable() {
+class Cell(private var value: Token, private val randomizer: TokenRandomizer? = null) : Observable() {
 
     fun setCellValue(newValue : Token) {
         value = newValue
@@ -19,7 +19,7 @@ class Cell(var value : Token) : Observable() {
     }
 
     fun generateRandomValue() {
-        value = TokenRandomizer(5).randomToken()
+        if (randomizer != null) setCellValue(randomizer.randomToken())
     }
 
     fun isEmpty(): Boolean {
@@ -52,7 +52,6 @@ class Cell(var value : Token) : Observable() {
     fun switchValues(cell: Cell) {
         val currentValue = value
         setCellValue(cell.getCellValue())
-        //value = cell.getCellValue()
         cell.setCellValue(currentValue)
     }
 

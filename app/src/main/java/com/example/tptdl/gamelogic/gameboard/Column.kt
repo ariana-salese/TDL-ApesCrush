@@ -1,7 +1,7 @@
 package com.example.tptdl.gamelogic.gameboard
 
 // Column of cells used for the main app's GameBoard
-class Column(private val height : Int, bombAppearanceRate : Int) : Line(height, bombAppearanceRate) {
+class Column(private val height : Int, ruleSet: RuleSet) : Line(height, ruleSet) {
 
     fun shoveValuesToBottom() {
         var firstEmptyCell = height-1

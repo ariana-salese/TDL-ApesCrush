@@ -33,7 +33,7 @@ class WeatherService : Service() {
         return binder
     }
 
-    fun getCurrentWeather() : WeatherState?{
+    fun getCurrentWeather() : WeatherState? {
         if(!this::currentWeather.isInitialized) return null
         return currentWeather
     }

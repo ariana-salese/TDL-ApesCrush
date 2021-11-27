@@ -5,7 +5,7 @@ import com.example.tptdl.gamelogic.gameboard.Cell
 import com.example.tptdl.gamelogic.gameboard.GameBoard
 import com.example.tptdl.weatherAPI.WeatherState
 
-class Game (val levelNumber : Int, val currentWeather : WeatherState, boardWidth : Int, boardHeight : Int){
+class Game (private val levelNumber : Int, private val currentWeather : WeatherState, boardWidth : Int, boardHeight : Int){
 
     private var gameboard: GameBoard
     private var score: Score = Score(1000 + levelNumber * 100)
@@ -24,7 +24,13 @@ class Game (val levelNumber : Int, val currentWeather : WeatherState, boardWidth
 
         if(score.currentPoints == points) movementsCounter.undoMovement()
 
+        checkRulSetChange()
+
         return  movementDone
+    }
+
+    private fun checkRulSetChange() {
+        if (movementsCounter.getRemainingMovements() % 2 == 0) gameboard.setRuleSetChange()
     }
 
     fun checkWin() : Boolean{
@@ -34,6 +40,8 @@ class Game (val levelNumber : Int, val currentWeather : WeatherState, boardWidth
     fun checkLose() : Boolean{
         return movementsCounter.checkIfLoss()
     }
+
+
 
     fun linkObservers(buttonList: MutableList<MutableList<CellButton>>) {
         gameboard.linkObservers(buttonList)
