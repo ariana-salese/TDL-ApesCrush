@@ -39,8 +39,7 @@ class Cell(private var value: Token, private val randomizer: TokenRandomizer? = 
     }
 
     fun explode(cellCoords: Pair<Int, Int>, gameBoard: GameBoard) {
-        if (!value.isExplosive())
-            return
+        if (!value.isExplosive()) return
         value.explode(cellCoords, gameBoard)
     }
 

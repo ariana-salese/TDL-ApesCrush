@@ -8,9 +8,14 @@ import kotlinx.coroutines.*
 // "internal" visibility modifier lets me access the class' parameters as long as it's from the same module
 class GameBoard(private val width : Int, private val height : Int, private val ruleSet : RuleSet, private val score: Score) {
 
+    private val LEFT = Direction(-1, 0)
+    private val RIGHT = Direction(1, 0)
+    private val TOP = Direction(0, -1)
+    private val BOTTOM = Direction(0, 1)
+
     private var myColumns : MutableList<Column> = mutableListOf()
     private var myRows : MutableList<Row> = mutableListOf()
-    private var lastMovement = Movement(Pair(0,0), "Right")
+    private lateinit var lastMovement : Movement
 
     /* Right after the board has been initialized and shown, the controller should call checkForCombos()
        in case the board was generated with a combo already in it
@@ -32,16 +37,10 @@ class GameBoard(private val width : Int, private val height : Int, private val r
        this function is called, the controller will checkForCombos(), if none are found it will call
        undoLastMovement().
     */
-    suspend fun doMovement(movement : Movement) {
-        if (!movement.checkIfOutOfBounds(height, width))
-            throw Exception("Invalid movement")
+    private suspend fun doMovement(movement : Movement) {
+        if (movement.checkIfOutOfBounds(height, width)) throw Exception("Invalid movement")
 
-        val cellToSwitchCoords = movement.obtainCellCoords()
-        val cellToSwitchWithCoords = movement.obtainCellToSwitch()
-        val cellToSwitch = obtainCell(cellToSwitchCoords)
-        val cellToSwitchWith = obtainCell(cellToSwitchWithCoords)
-
-        switchCellValues(cellToSwitch, cellToSwitchWith)
+        switchCellValues(obtainCell(movement.obtainCellCoords()), obtainCell(movement.obtainCellCoordsToSwitch()))
         delay(200L)
 
         lastMovement = movement
@@ -50,7 +49,7 @@ class GameBoard(private val width : Int, private val height : Int, private val r
     /* Switches values of 2 different Cell's (passed through parameters as a Pair of Int's,
      doesn't accept invalid switches)
      */
-    fun switchCellValues(selectedCell: Cell, cellToSwitch: Cell) {
+    private fun switchCellValues(selectedCell: Cell, cellToSwitch: Cell) {
         selectedCell.switchValues(cellToSwitch)
     }
 
@@ -58,25 +57,25 @@ class GameBoard(private val width : Int, private val height : Int, private val r
        checkForCombos finds any combos, it will execute them leaving Void in the spots where there
        was a combo. It will return false if no combos were found.
      */
-    suspend fun checkForCombos(initializing : Boolean = false) : Boolean {
+    private suspend fun checkForCombos(initializing : Boolean = false) : Boolean {
         val markedForRemoval : MutableList<Cell> = mutableListOf()
         val bombsToExplode : MutableList<Cell> = mutableListOf()
 
-        for (i in 0 until width) {
-            markedForRemoval.addAll(myColumns[i].getAllCombos())
-        }
-        for (i in 0 until height) {
-            markedForRemoval.addAll(myRows[i].getAllCombos())
-        }
+        for (i in 0 until width) markedForRemoval.addAll(myColumns[i].getAllCombos())
+
+        for (i in 0 until height) markedForRemoval.addAll(myRows[i].getAllCombos())
 
         if (markedForRemoval.isEmpty()) return false
 
         bombsToExplode.addAll(this.checkForAdjacentExplosives(markedForRemoval))
         markedForRemoval.forEach { it.pop(score) }
+
         this.repopulateBoard(initializing)
+
         bombsToExplode.forEach {
             it.explode(this.getCellCoords(it), this)
         }
+
         this.repopulateBoard(initializing)
         return true // Have to put this to fulfill the boolean return but might not be correct
     }
@@ -88,16 +87,18 @@ class GameBoard(private val width : Int, private val height : Int, private val r
     private suspend fun repopulateBoard(initializing: Boolean) {
         if (!initializing) delay(500L)
         this.dropCurrentTokens()
+
         for (i in 0 until width) {
             if (!initializing) delay(50L)
             myColumns[i].refill()
         }
+
         if (!this.checkForCombos(initializing)) return
     }
 
     // Will vertically drop the current tokens as long as there is Void below
     private fun dropCurrentTokens() {
-        for (i in 0 until width) { (myColumns[i]).shoveValuesToBottom() }
+        for (i in 0 until width) myColumns[i].shoveValuesToBottom()
         // this.updateRows() //now unused, since values are switched instead of cells
         // updateView()?
     }
@@ -117,7 +118,8 @@ class GameBoard(private val width : Int, private val height : Int, private val r
      */
     fun obtainCell(cellToObtain: Pair<Int, Int>): Cell {
         val (x, y) = cellToObtain
-        if (x < 0 || y < 0 || x >= width || y >= height) { return Cell(Void()) }
+        if (x < 0 || y < 0 || x >= width || y >= height) return Cell(Void())
+
         return myColumns[x].getCellAtIndex(y)
     }
 
@@ -143,49 +145,45 @@ class GameBoard(private val width : Int, private val height : Int, private val r
      */
     private fun checkForAdjacentExplosives(markedForRemoval: MutableList<Cell>): MutableList<Cell> {
         val bombsToExplode = mutableListOf<Cell>()
+
         markedForRemoval.forEach {
-            val cellCoords = this.getCellCoords(it)
-            val topCell = this.topCell(cellCoords)
-            val bottomCell = this.bottomCell(cellCoords)
-            val rightCell = this.rightCell(cellCoords)
-            val leftCell = this.leftCell(cellCoords)
+            val cellCoords = getCellCoords(it)
+
+            val topCell = topCell(cellCoords)
+            val bottomCell = bottomCell(cellCoords)
+            val rightCell = rightCell(cellCoords)
+            val leftCell = leftCell(cellCoords)
+
             if (topCell.isExplosive()) bombsToExplode.add(topCell)
             if (bottomCell.isExplosive()) bombsToExplode.add(bottomCell)
             if (rightCell.isExplosive()) bombsToExplode.add(rightCell)
             if (leftCell.isExplosive()) bombsToExplode.add(leftCell)
         }
+
         return bombsToExplode
     }
 
     // Obtains top cell of cell in parameter, if out of bounds, returns a Cell with Void
     private fun topCell(cellCoords: Pair<Int, Int>): Cell {
-        val (x, y) = cellCoords
-        if (y == 0) return Cell(Void())
-        return obtainCell(Pair(x, y-1))
+        return obtainCell(TOP.obtainCellCoordsOf(cellCoords))
     }
 
     // Obtains bottom cell of cell in parameter, if out of bounds, returns a Cell with Void
     private fun bottomCell(cellCoords: Pair<Int, Int>): Cell {
-        val (x, y) = cellCoords
-        if (y == height-1) return Cell(Void())
-        return obtainCell(Pair(x, y+1))
+        return obtainCell(BOTTOM.obtainCellCoordsOf(cellCoords))
     }
 
     // Obtains right cell of cell in parameter, if out of bounds, returns a Cell with Void
     private fun rightCell(cellCoords: Pair<Int, Int>): Cell {
-        val (x, y) = cellCoords
-        if (y == width-1) return Cell(Void())
-        return obtainCell(Pair(x+1, y))
+        return obtainCell(RIGHT.obtainCellCoordsOf(cellCoords))
     }
 
     // Obtains left cell of cell in parameter, if out of bounds, returns a Cell with Void
     private fun leftCell(cellCoords: Pair<Int, Int>): Cell {
-        val (x, y) = cellCoords
-        if (y == 0) return Cell(Void())
-        return obtainCell(Pair(x-1, y))
+        return obtainCell(LEFT.obtainCellCoordsOf(cellCoords))
     }
 
-    // Precondition for this function is that the cell should be in the board, else it will return (-1, -1)
+    // If the cell isn't in the board it will return (-1, -1)
     private fun getCellCoords(cell: Cell): Pair<Int, Int> {
         for (i in 0 until width) {
             for (j in 0 until height) {
@@ -197,7 +195,7 @@ class GameBoard(private val width : Int, private val height : Int, private val r
 
     // Undoes the last movement (does it again which causes the board to return to it's previous state)
     private suspend fun undoLastMovement() {
-        this.doMovement(lastMovement)
+        doMovement(lastMovement)
     }
 
     fun linkObservers(buttonList: MutableList<MutableList<CellButton>>) {
@@ -222,15 +220,11 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         return adjacentList.contains(cell2)
     }
 
-    private fun getDirection(cell1 : Cell, cell2 : Cell) : String {
-        val adjacentList = getAdjacents(cell1)
-        val stringsList = mutableListOf("Up", "Down", "Right", "Left")
+    private fun getDirection(cell1 : Cell, cell2 : Cell) : Direction {
+        val (x1, y1) = getCellCoords(cell1)
+        val (x2, y2) = getCellCoords(cell2)
 
-        for (i in 0 until adjacentList.size) {
-            if (adjacentList[i] == cell2) return stringsList[i]
-        }
-
-        return "NotValid"
+        return Direction(x2 - x1, y2 - y1)
     }
 
     fun tryMovement(cell1 : Cell, cell2 : Cell) : Boolean {
@@ -245,8 +239,12 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         }
 
         println("END OF MOVEMENT")
-        println("PUNTOS ACTUALES: " + score.currentPoints)
+        println("PUNTOS ACTUALES: " + score.currentPoints) //TODO borrar
         return true
+    }
+
+    fun setRuleSetChange() {
+        ruleSet.weatherEvent(this)
     }
 
     //                  TESTING //TODO borrar
@@ -269,7 +267,7 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         }
         board += division
         println(board)
-    } //TODO Eliminar
+    }
 
     internal fun repopulateBoardTESTING() {  // internal function to test repopulateBoard()
         this.dropCurrentTokens()
@@ -340,8 +338,4 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         else
             throw Exception("Invalid switch")
     } //TODO Repensar utilidad de este metodo @Alejo
-
-    fun setRuleSetChange() {
-        ruleSet.weatherEvent(this)
-    }
 }
