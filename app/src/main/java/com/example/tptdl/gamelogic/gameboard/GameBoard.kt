@@ -2,6 +2,7 @@ package com.example.tptdl.gamelogic.gameboard
 
 import com.example.tptdl.CellButton
 import com.example.tptdl.gamelogic.Score
+import com.example.tptdl.gamelogic.tokens.Token
 import com.example.tptdl.gamelogic.tokens.Void
 import kotlinx.coroutines.*
 
@@ -54,13 +55,13 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         selectedCell.switchValues(cellToSwitch)
     }
 
-    /* After the controller has called the function moveCell(), it will call checkForCombos() if
-       checkForCombos finds any combos, it will execute them leaving Void in the spots where there
-       was a combo. It will return false if no combos were found.
+    /* If checkForCombos finds any combos, it will execute them leaving Void in the spots where
+       there was a combo, calling repopulate board with any bomb that should be called for explosion.
+       It will return false if no combos were found.
      */
     suspend fun checkForCombos(initializing : Boolean = false) : Boolean {
         val markedForRemoval : MutableList<Cell> = mutableListOf()
-        val bombsToExplode : MutableList<Cell> = mutableListOf()
+        val bombsToExplode : MutableList<Token> = mutableListOf()
 
         for (i in 0 until width) {
             markedForRemoval.addAll(myColumns[i].getAllCombos())
@@ -73,33 +74,52 @@ class GameBoard(private val width : Int, private val height : Int, private val r
 
         bombsToExplode.addAll(this.checkForAdjacentExplosives(markedForRemoval))
         markedForRemoval.forEach { it.pop(score) }
-        this.repopulateBoard(initializing)
-        bombsToExplode.forEach {
-            it.explode(this.getCellCoords(it), this)
-        }
-        this.repopulateBoard(initializing)
-        return true // Have to put this to fulfill the boolean return but might not be correct
+        this.repopulateBoard(initializing, bombsToExplode)
+        return true
     }
 
     /* Function will go through every cell of the board, whenever it finds a cell with a Void value,
     it will replace it with a random token. After it's done, it'll call checkForCombos(), since the
     newly placed tokens may have left the board in a state where combos are available
      */
-    private suspend fun repopulateBoard(initializing: Boolean) {
+    private suspend fun repopulateBoard(initializing: Boolean, bombsToExplode : MutableList<Token>? = null) {
         if (!initializing) delay(500L)
+
         this.dropCurrentTokens()
         for (i in 0 until width) {
             if (!initializing) delay(50L)
             myColumns[i].refill()
         }
+
+        if (bombsToExplode != null) {
+            if (bombsToExplode.isNotEmpty()) {
+                this.searchForAndExplode(bombsToExplode)
+            }
+        }
+
+        this.dropCurrentTokens()
+        for (i in 0 until width) {
+            if (!initializing) delay(50L)
+            myColumns[i].refill()
+        }
+
         if (!this.checkForCombos(initializing)) return
+    }
+
+    private fun searchForAndExplode(bombsToExplode: MutableList<Token>) {
+        for (i in 0 until width) {
+            for (j in 0 until height) {
+                val currenCell = myColumns[i].getCellAtIndex(j)
+                if (bombsToExplode.any { it === currenCell.getCellValue() })
+                    currenCell.explode(Pair(i, j), this)
+            }
+        }
     }
 
     // Will vertically drop the current tokens as long as there is Void below
     private fun dropCurrentTokens() {
         for (i in 0 until width) { (myColumns[i]).shoveValuesToBottom() }
-        // this.updateRows() //now unused, since values are switched instead of cells
-        // updateView()?
+        // this.updateRows() // now unused, since values are switched instead of cells
     }
 
     private fun updateRows() {
@@ -141,18 +161,18 @@ class GameBoard(private val width : Int, private val height : Int, private val r
        in any of it's four adjacent directions, if there is one it will add it to a list which is returned
        at the end of the function.
      */
-    private fun checkForAdjacentExplosives(markedForRemoval: MutableList<Cell>): MutableList<Cell> {
-        val bombsToExplode = mutableListOf<Cell>()
+    private fun checkForAdjacentExplosives(markedForRemoval: MutableList<Cell>): MutableList<Token> {
+        val bombsToExplode = mutableListOf<Token>()
         markedForRemoval.forEach {
             val cellCoords = this.getCellCoords(it)
             val topCell = this.topCell(cellCoords)
             val bottomCell = this.bottomCell(cellCoords)
             val rightCell = this.rightCell(cellCoords)
             val leftCell = this.leftCell(cellCoords)
-            if (topCell.isExplosive()) bombsToExplode.add(topCell)
-            if (bottomCell.isExplosive()) bombsToExplode.add(bottomCell)
-            if (rightCell.isExplosive()) bombsToExplode.add(rightCell)
-            if (leftCell.isExplosive()) bombsToExplode.add(leftCell)
+            if (topCell.isExplosive()) bombsToExplode.add(topCell.getCellValue())
+            if (bottomCell.isExplosive()) bombsToExplode.add(bottomCell.getCellValue())
+            if (rightCell.isExplosive()) bombsToExplode.add(rightCell.getCellValue())
+            if (leftCell.isExplosive()) bombsToExplode.add(leftCell.getCellValue())
         }
         return bombsToExplode
     }
@@ -241,7 +261,7 @@ class GameBoard(private val width : Int, private val height : Int, private val r
 
         runBlocking {
             doMovement(movement)
-            if (!checkForCombos()) undoLastMovement()
+            if (!checkForCombos(false)) undoLastMovement()
         }
 
         println("END OF MOVEMENT")
@@ -271,20 +291,40 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         println(board)
     } //TODO Eliminar
 
-    internal fun repopulateBoardTESTING() {  // internal function to test repopulateBoard()
+    internal suspend fun repopulateBoardTESTING(initializing: Boolean, bombsToExplode : MutableList<Token>? = null) {  // internal function to test repopulateBoard()
+        if (!initializing) delay(500L)
         this.dropCurrentTokens()
         for (i in 0 until width) {
+            if (!initializing) delay(50L)
             myColumns[i].refill()
         }
         println("Board after repopulation:")
         this.printBoard()
+
+        if (bombsToExplode != null) {
+            if (bombsToExplode.isNotEmpty()) {
+                this.searchForAndExplode(bombsToExplode)
+            }
+        }
+        println("Board after bombs are exploded:")
+        this.printBoard()
+
+        this.dropCurrentTokens()
+        for (i in 0 until width) {
+            if (!initializing) delay(50L)
+            myColumns[i].refill()
+        }
+        println("Board after repopulation:")
+        this.printBoard()
+
         if (!this.checkForCombosTESTING()) return
     }
 
-    internal fun checkForCombosTESTING() : Boolean  {   // internal function to test checkForCombos() that adds a print after removal of combo'ed cells
+    internal suspend fun checkForCombosTESTING(initializing : Boolean = false) : Boolean  {   // internal function to test checkForCombos() that adds a print after removal of combo'ed cells
         val markedForRemoval : MutableList<Cell> = mutableListOf()
-        val bombsToExplode : MutableList<Cell> = mutableListOf()
-
+        val bombsToExplode : MutableList<Token> = mutableListOf()
+        println("Board before combos identified and emptied:")
+        this.printBoard()
         for (i in 0 until width) {
             //println("THIS IS IN COMBOS: " + (myColumns[i].getAllCombos().toString()))
             //println("stop")
@@ -303,12 +343,8 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         markedForRemoval.forEach { it.pop(score) }
         println("Board after combos identified and emptied:")
         this.printBoard()
-        bombsToExplode.forEach {
-            it.explode(this.getCellCoords(it), this)
-        }
-        println("Board after bombs are exploded:")
-        this.printBoard()
-        this.repopulateBoardTESTING()
+        println("Repopulation after popped combos: ")
+        this.repopulateBoardTESTING(initializing, bombsToExplode)
         return true
     }
 
@@ -340,6 +376,10 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         else
             throw Exception("Invalid switch")
     } //TODO Repensar utilidad de este metodo @Alejo
+    /* Esto de arriba esta deprecado por unos cambios que hicimos para que quede mas comodo, aun asi
+    lo dejaria porque es un metodo que si se quisiese implementar de otra manera se podria usar
+    si eso lo movemos al fondo del archivo.
+     */
 
     fun setRuleSetChange() {
         ruleSet.weatherEvent(this)

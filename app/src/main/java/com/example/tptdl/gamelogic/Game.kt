@@ -18,18 +18,16 @@ class Game (private val levelNumber : Int, private val currentWeather : WeatherS
     fun tryMovement(cell1: Cell, cell2: Cell) : Boolean{
 
         val points = score.currentPoints
-
         val movementDone = gameboard.tryMovement(cell1, cell2)
         if(movementDone) movementsCounter.executeMovement()
 
         if(score.currentPoints == points) movementsCounter.undoMovement()
-
-        checkRulSetChange()
+        checkRuleSetChange()
 
         return  movementDone
     }
 
-    private fun checkRulSetChange() {
+    private fun checkRuleSetChange() {
         if (movementsCounter.getRemainingMovements() % 2 == 0) gameboard.setRuleSetChange()
     }
 
