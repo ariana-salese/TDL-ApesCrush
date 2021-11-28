@@ -44,7 +44,7 @@ class Cell(private var value: Token, private val randomizer: TokenRandomizer? = 
     }
 
     fun pop(score : Score? = null) {
-        score!!.add(value.getValue())
+        score?.add(value.getValue())
         emptyCell()
     }
 

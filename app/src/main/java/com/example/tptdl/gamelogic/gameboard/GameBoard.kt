@@ -6,7 +6,6 @@ import com.example.tptdl.gamelogic.tokens.Token
 import com.example.tptdl.gamelogic.tokens.Void
 import kotlinx.coroutines.*
 
-// "internal" visibility modifier lets me access the class' parameters as long as it's from the same module
 class GameBoard(private val width : Int, private val height : Int, private val ruleSet : RuleSet, private val score: Score) {
 
     private val LEFT = Direction(-1, 0)
@@ -83,9 +82,9 @@ class GameBoard(private val width : Int, private val height : Int, private val r
 
         this.dropCurrentTokens()
         for (i in 0 until width) {
-            if (!initializing) delay(50L)
             myColumns[i].refill()
         }
+        if (!initializing) delay(100L)
 
         if (bombsToExplode != null) {
             if (bombsToExplode.isNotEmpty()) {
@@ -95,9 +94,10 @@ class GameBoard(private val width : Int, private val height : Int, private val r
 
         this.dropCurrentTokens()
         for (i in 0 until width) {
-            if (!initializing) delay(50L)
+            //if (!initializing) delay(50L)
             myColumns[i].refill()
         }
+        if (!initializing) delay(100L)
 
         if (!this.checkForCombos(initializing)) return
     }
@@ -114,7 +114,9 @@ class GameBoard(private val width : Int, private val height : Int, private val r
 
     // Will vertically drop the current tokens as long as there is Void below
     private fun dropCurrentTokens() {
-        for (i in 0 until width) { (myColumns[i]).shoveValuesToBottom() }
+        for (i in 0 until width) {
+            myColumns[i].shoveValuesToBottom()
+        }
         // this.updateRows() // now unused, since values are switched instead of cells
     }
 
@@ -145,6 +147,17 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         for (i in 0 until width) {
             delay(150L)
             myColumns[i].shuffle()
+        }
+        delay(100L)
+        checkForCombos()
+    }
+
+    suspend fun removeFromBottom(rows: Int) {
+        for(i in height - 1 downTo height - rows){
+            delay(150L)
+            for(j in 0 until width){
+                myRows[i].getCellAtIndex(j).pop()
+            }
         }
         delay(100L)
         checkForCombos()
@@ -366,6 +379,7 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         else
             throw Exception("Invalid switch")
     } //TODO Repensar utilidad de este metodo @Alejo
+
     /* Esto de arriba esta deprecado por unos cambios que hicimos para que quede mas comodo, aun asi
     lo dejaria porque es un metodo que si se quisiese implementar de otra manera se podria usar
     si eso lo movemos al fondo del archivo.
