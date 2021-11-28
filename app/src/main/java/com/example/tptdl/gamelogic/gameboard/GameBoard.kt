@@ -371,7 +371,4 @@ class GameBoard(private val width : Int, private val height : Int, private val r
     si eso lo movemos al fondo del archivo.
      */
 
-    fun setRuleSetChange() {
-        ruleSet.weatherEvent(this)
-    }
 }
