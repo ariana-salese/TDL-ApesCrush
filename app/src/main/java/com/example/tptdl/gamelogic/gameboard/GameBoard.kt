@@ -89,6 +89,7 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         if (bombsToExplode != null) {
             if (bombsToExplode.isNotEmpty()) {
                 this.searchForAndExplode(bombsToExplode)
+                if (!initializing) delay(500L)
             }
         }
 

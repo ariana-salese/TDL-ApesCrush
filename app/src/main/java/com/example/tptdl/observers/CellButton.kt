@@ -20,8 +20,7 @@ class CellButton(val context : LevelActivity, row : TableRow, lenght : Int) : Ob
 
     init {
         button.scaleType = ImageView.ScaleType.FIT_CENTER
-        button.setBackgroundColor(Color.parseColor("#ffffff"))
-        button.background.alpha = 100
+        changeBackground("#ffffff", 100)
         button.setPadding(12)
         row.addView(button)
         val params = button.layoutParams
@@ -42,8 +41,7 @@ class CellButton(val context : LevelActivity, row : TableRow, lenght : Int) : Ob
     override fun update(o: Observable?, arg: Any?) {
         context.runOnUiThread {
             button.setImageResource(cell.getCellValue().getPath())
-            button.setBackgroundColor(Color.parseColor("#ffffff"))
-            button.background.alpha = 100
+            changeBackground("#ffffff", 100)
         }
     }
 
@@ -55,9 +53,6 @@ class CellButton(val context : LevelActivity, row : TableRow, lenght : Int) : Ob
     fun changeBackground(color : String, opacity : Int) {
         button.setBackgroundColor(Color.parseColor(color))
         button.background.alpha = opacity
-
-        println("x position: ${button.x}")
-        println("y position: ${button.y}")
     }
 
     fun disable() {

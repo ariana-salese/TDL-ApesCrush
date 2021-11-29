@@ -22,7 +22,7 @@ class Game (private val levelNumber : Int, private val currentWeather : WeatherS
         if(movementDone) movementsCounter.executeMovement()
 
         if(score.currentPoints == points) movementsCounter.undoMovement()
-        checkRuleSetChange()
+        else checkRuleSetChange()
 
         return  movementDone
     }
@@ -38,8 +38,6 @@ class Game (private val levelNumber : Int, private val currentWeather : WeatherS
     fun checkLose() : Boolean{
         return movementsCounter.checkIfLoss()
     }
-
-
 
     fun linkObservers(buttonList: MutableList<MutableList<CellButton>>) {
         gameboard.linkObservers(buttonList)
