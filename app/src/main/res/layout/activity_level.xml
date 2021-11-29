@@ -11,9 +11,11 @@
         android:id="@+id/backgroundImageLevel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/level_normal"
         android:alpha="0.9"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:src="@drawable/level_normal"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <LinearLayout
         android:id="@+id/gameBoardLayout"
@@ -69,6 +71,7 @@
         app:layout_constraintTop_toBottomOf="@id/gameBoardLayout"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <TextView
         android:id="@+id/movementsText"
         android:layout_width="wrap_content"
@@ -86,5 +89,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
+    <ProgressBar
+        android:id="@+id/scoreProgressBar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.938" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

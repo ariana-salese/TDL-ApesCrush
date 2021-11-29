@@ -1,18 +1,23 @@
 package com.example.tptdl.gamelogic
 
+import com.example.tptdl.R
 import com.example.tptdl.observers.CellButton
 import com.example.tptdl.gamelogic.gameboard.Cell
 import com.example.tptdl.gamelogic.gameboard.GameBoard
+import com.example.tptdl.observers.ProgressBar
 import com.example.tptdl.weatherAPI.WeatherState
 
-class Game (private val levelNumber : Int, private val currentWeather : WeatherState, boardWidth : Int, boardHeight : Int){
+
+class Game(private val levelNumber: Int, private val currentWeather: WeatherState, boardWidth: Int, boardHeight: Int, progressBar: android.widget.ProgressBar){
 
     private var gameboard: GameBoard
     private var score: Score = Score(2000 + levelNumber * 100)
     private var movementsCounter: MovementsCounter = MovementsCounter()
+    private var scoreProgressBar : ProgressBar = ProgressBar(score.winThreshold, progressBar)
 
     init {
         gameboard = GameBoard(boardWidth, boardHeight, currentWeather, score)
+        score.addObserver(scoreProgressBar)
     }
 
     fun tryMovement(cell1: Cell, cell2: Cell) : Boolean{
@@ -23,7 +28,6 @@ class Game (private val levelNumber : Int, private val currentWeather : WeatherS
 
         if(score.currentPoints == points) movementsCounter.undoMovement()
         else checkForWeatherEvent()
-
         return  movementDone
     }
 

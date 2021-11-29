@@ -15,7 +15,7 @@ import java.util.*
 import kotlin.properties.Delegates
 
 
-class LevelActivity : AppCompatActivity(), Observer{
+class LevelActivity : AppCompatActivity(){
     private val boardHeight = 8
     private val boardWidth = 6
     private var clickedButton : CellButton? = null
@@ -25,6 +25,7 @@ class LevelActivity : AppCompatActivity(), Observer{
     private lateinit var userData : UserData
     private lateinit var remainingMovementsText : TextView
     private var levelNumber by Delegates.notNull<Int>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,11 +56,10 @@ class LevelActivity : AppCompatActivity(), Observer{
 
         levelNumber = intent.getSerializableExtra("levelNumber") as Int
 
-        game = Game(levelNumber, currentWeather, boardWidth, boardHeight)
+        game = Game(levelNumber, currentWeather, boardWidth, boardHeight, findViewById<ProgressBar>(R.id.scoreProgressBar) )
 
         updateMovementsText()
         createBoard(widthBoardPixels)
-
         buttonList.forEach { row ->
             row.forEach { cell ->
                 cell.update(null,null)
@@ -148,11 +148,8 @@ class LevelActivity : AppCompatActivity(), Observer{
         //TODO cerrar nivel, volver al mapa? o pantalla de congrats con boton siguiente y creamos otro nivel?
     }
 
-    override fun update(o: Observable?, arg: Any?) {
-        buttonList.forEach {
-            it.forEach { cell->
-                cell.update(null, null)
-            }
-        }
-    }
+
+        //println( "PUNTAJE DE BARRA"+game.getScore().currentPoints)
+        //scoreProgressBar.setProgress(game.getScore().currentPoints)
+
 }
