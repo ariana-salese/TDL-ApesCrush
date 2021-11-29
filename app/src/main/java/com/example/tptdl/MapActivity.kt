@@ -27,12 +27,11 @@ class MapActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         userData = UserData(this)
-        println("MAP ACTIVITY (onCreate): ${userData.getLastAvailableLevel()}") //TODO eliminar
 
         //Setting background according to weather
         currentWeather = intent.getSerializableExtra("weather") as WeatherState
         val background: ImageView = findViewById(R.id.backgroundImage)
-        background.setImageResource(resources.getIdentifier(currentWeather.getMapBackgroundIdName(), "drawable", this.packageName))
+        background.setImageResource(currentWeather.getMapBackgroundPath())
 
         for (i in 1 until AMOUNT_OF_VISIBLE_LEVELS + 1) {
             levelButtons.add(findViewById<View>(resources.getIdentifier("buttonLevel$i", "id", this.packageName)) as ImageButton)
@@ -48,8 +47,6 @@ class MapActivity : AppCompatActivity() {
     fun clickOnLevelButton(view: View) {
 
         val levelNumber = view.contentDescription.toString().toInt() + mapFase * AMOUNT_OF_VISIBLE_LEVELS
-
-        println("Se clickeo nivel: $levelNumber")//TODO eliminar
 
         val intent = Intent(this, LevelActivity::class.java)
         intent.putExtra("weather", currentWeather)
@@ -111,7 +108,6 @@ class MapActivity : AppCompatActivity() {
 
     override fun onResume() {
         this.updateAvailableLevels()
-        println("MAP ACTIVITY (onResume): ${userData.getLastAvailableLevel()}") //TODO eliminar
         super.onResume()
     }
 }

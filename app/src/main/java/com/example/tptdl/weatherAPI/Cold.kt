@@ -8,8 +8,8 @@ class Cold : WeatherState() {
         return "Cold"
     }
 
-    override fun getMapBackgroundIdName(): String {
-        return "ic_map_cold"
+    override fun getMapBackgroundPath(): Int {
+        return R.drawable.ic_map_cold
     }
 
     override fun getBombPath(): Int {

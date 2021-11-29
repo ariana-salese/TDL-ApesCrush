@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         supportActionBar?.hide()
 
         askForForegroundPermissions()
-        if(checkForPermissions()) askForBackgroundPermission()
 
         val levelButton: Button = findViewById(R.id.play_button)
         levelButton.setOnClickListener {
@@ -63,13 +62,10 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
         connection = object : ServiceConnection {
             override fun onServiceDisconnected(componentName: ComponentName) {
-                println("Disconnected")
                 weatherService = null
             }
             override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
-                println("Connected")
                 weatherService = (service as WeatherService.WeatherServiceBinder).service
-                println("Checking: $isCheckingForPermissions")
                 if(!isCheckingForPermissions) updateCurrentWeather()
             }
         }
@@ -86,53 +82,17 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
             isCheckingForPermissions = false
-            when {
-                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                    println("Fine permission granted")
-                }
-                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                    println("Coarse permission granted, location detection won't work")
-                }
-                else -> {
-                println("No permission granted, location detection won't work")
-                }
-            }
+
+            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false)
+
+            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)
+
             if(weatherService != null) updateCurrentWeather()
         }
 
         locationPermissionRequest.launch(arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,))
-    }
-
-    private fun askForBackgroundPermission(){
-
-        val backgroundPermissionRequest = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { permission ->
-            if(permission){
-                println("Background permission granted")
-            }
-            else{
-                println("No background permission granted")
-            }
-        }
-
-        backgroundPermissionRequest.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-    }
-
-    private fun checkForPermissions() : Boolean {
-        if (ActivityCompat.checkSelfPermission(
-                baseContext,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                baseContext,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return false
-        }
-        return true
     }
 
     private fun updateCurrentWeather(){
@@ -176,49 +136,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             weatherIcon.setImageResource(resources.getIdentifier(currentWeather.toString().lowercase(), "drawable", this.packageName))
             weatherText.text = currentWeather.toString()
         }
-    }
-
-    //TODO chequear utilidad/eliminar ---------------------
-    /**
-     * Called when the user navigates away from the app but might come back
-     */
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-    }
-
-    /** Lifecycle Methods **/
-    override fun onStart() {
-        super.onStart()
-        println("START MAIN")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        println("RESUME MAIN")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        println("PAUSE MAIN")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        println("STOP MAIN")
-    }
-
-    override fun onDestroy() {
-        println("DESTROY MAIN")
-        super.onDestroy()
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        println("RESTART MAIN")
     }
 }
 

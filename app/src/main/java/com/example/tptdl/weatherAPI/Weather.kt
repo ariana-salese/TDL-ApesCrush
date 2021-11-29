@@ -6,10 +6,12 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.URL
 
+const val HOT_TEMP_THRESHOLD = 25 //ºC
+const val COLD_TEMP_THRESHOLD = 15 //ºC
+const val WIND_SPEED_THRESHOLD = 6 //m/s
+
 class Weather {
 
-    private val cityID: String = "3433955"  //ID Buenos Aires
-                                            //TODO conseguir ubicacion del usuario
     private val APIKey: String = "cbe981f9e01863b0333a6fdbc475784f"
 
     //Obtains weather data from API (https://openweathermap.org)
@@ -20,8 +22,7 @@ class Weather {
         withContext(Dispatchers.IO) {
             runCatching{
                 response = URL("https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&units=metric&appid=$APIKey").readText(Charsets.UTF_8)
-                //response = URL("https://api.openweathermap.org/data/2.5/weather?id=$cityID&units=metric&appid=$APIKey").readText(Charsets.UTF_8)
-            }.onFailure { println("Something wrong happened: ${it.message}") }
+            }.onFailure { println("Couldn't fetch current weather: ${it.message}") }
         }
         return response
     }
@@ -29,9 +30,7 @@ class Weather {
     //Obtains only important values from JSON
     private fun cleanWeatherData(weatherData: String): MutableMap<String, String>? {
 
-        if (weatherData == "") {
-            return null
-        }
+        if (weatherData == "") return null
 
         val cleanWeatherData: MutableMap<String, String> = mutableMapOf()
 
@@ -42,7 +41,7 @@ class Weather {
         val wind = jsonObj.getJSONObject("wind")
 
         cleanWeatherData["temperature"] = main.getString("temp")
-        cleanWeatherData["rain"] = weather.getString("main")
+        cleanWeatherData["weatherStatus"] = weather.getString("main")
         cleanWeatherData["windSpeed"] = wind.getString("speed")
 
         println(cleanWeatherData)
@@ -58,14 +57,14 @@ class Weather {
 
         //Priorities: Rainy, Hot, Cold, Windy
 
-        if (cleanWeatherData.get("rain") == "Rain") return Rainy()
+        if (cleanWeatherData["weatherStatus"] == "Rain") return Rainy()
 
-        if (cleanWeatherData.get("temperature")?.toFloat() ?: 0f > 25) return Hot()
+        if (cleanWeatherData["temperature"]?.toFloat() ?: 0f > HOT_TEMP_THRESHOLD) return Hot()
 
-        if (cleanWeatherData.get("temperature")?.toFloat() ?: 0f < 15) return Cold()
+        if (cleanWeatherData["temperature"]?.toFloat() ?: 0f < COLD_TEMP_THRESHOLD) return Cold()
 
-        if (cleanWeatherData.get("windSpeed")?.toFloat() ?: 0f > 6) return Windy()
+        if (cleanWeatherData["windSpeed"]?.toFloat() ?: 0f > WIND_SPEED_THRESHOLD) return Windy()
 
-        return Normal() //TODO agregar constantes
+        return Normal()
     }
 }

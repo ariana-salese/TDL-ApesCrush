@@ -1,13 +1,10 @@
 package com.example.tptdl.weatherAPI
 
-import android.app.Activity
-import android.content.Context
 import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import com.example.tptdl.R
 import com.example.tptdl.gamelogic.gameboard.GameBoard
 import kotlinx.coroutines.runBlocking
-import android.view.animation.Animation
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,8 +16,8 @@ class Rainy : WeatherState() {
         return "Rainy"
     }
 
-    override fun getMapBackgroundIdName(): String {
-        return "ic_map_rainy" //TODO
+    override fun getMapBackgroundPath(): Int {
+        return R.drawable.ic_map_rainy
     }
 
     override fun weatherEvent(gameBoard: GameBoard) {
@@ -31,8 +28,6 @@ class Rainy : WeatherState() {
             delay(600L)
             gameBoard.removeFromBottom(3)
         }
-
-        println("FLOOD")
     }
 
     override suspend fun starAnimation() {

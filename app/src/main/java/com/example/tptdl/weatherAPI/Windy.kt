@@ -5,7 +5,6 @@ import android.widget.ImageView
 import com.example.tptdl.R
 import com.example.tptdl.gamelogic.gameboard.GameBoard
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -15,8 +14,8 @@ class Windy : WeatherState() {
         return "Windy"
     }
 
-    override fun getMapBackgroundIdName(): String {
-        return "ic_map_windy" //TODO
+    override fun getMapBackgroundPath(): Int {
+        return R.drawable.ic_map_windy
     }
 
     override fun weatherEvent(gameBoard: GameBoard) {
@@ -24,7 +23,6 @@ class Windy : WeatherState() {
         GlobalScope.launch { starAnimation() }
 
         runBlocking { gameBoard.shuffle() }
-        println("SHUFFLE")
     }
 
     override suspend fun starAnimation() {

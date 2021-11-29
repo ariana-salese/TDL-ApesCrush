@@ -8,7 +8,7 @@ import com.example.tptdl.weatherAPI.WeatherState
 class Game (private val levelNumber : Int, private val currentWeather : WeatherState, boardWidth : Int, boardHeight : Int){
 
     private var gameboard: GameBoard
-    private var score: Score = Score(1000 + levelNumber * 100)
+    private var score: Score = Score(2000 + levelNumber * 100)
     private var movementsCounter: MovementsCounter = MovementsCounter()
 
     init {
@@ -22,13 +22,13 @@ class Game (private val levelNumber : Int, private val currentWeather : WeatherS
         if(movementDone) movementsCounter.executeMovement()
 
         if(score.currentPoints == points) movementsCounter.undoMovement()
-        else checkRuleSetChange()
+        else checkForWeatherEvent()
 
         return  movementDone
     }
 
-    private fun checkRuleSetChange() {
-        if (movementsCounter.getRemainingMovements() % 2 == 0) gameboard.setRuleSetChange()
+    private fun checkForWeatherEvent() {
+        if (movementsCounter.getRemainingMovements() % 2 == 0) gameboard.doWeatherEvent()
     }
 
     fun checkWin() : Boolean{

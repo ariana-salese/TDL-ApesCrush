@@ -68,7 +68,9 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         if (markedForRemoval.isEmpty()) return false
 
         bombsToExplode.addAll(this.checkForAdjacentExplosives(markedForRemoval))
+
         markedForRemoval.forEach { it.pop(score) }
+
         this.repopulateBoard(initializing, bombsToExplode)
         return true
     }
@@ -80,10 +82,7 @@ class GameBoard(private val width : Int, private val height : Int, private val r
     private suspend fun repopulateBoard(initializing: Boolean, bombsToExplode : MutableList<Token>? = null) {
         if (!initializing) delay(500L)
 
-        this.dropCurrentTokens()
-        for (i in 0 until width) {
-            myColumns[i].refill()
-        }
+        dropAndRefill()
         if (!initializing) delay(100L)
 
         if (bombsToExplode != null) {
@@ -93,22 +92,23 @@ class GameBoard(private val width : Int, private val height : Int, private val r
             }
         }
 
-        this.dropCurrentTokens()
-        for (i in 0 until width) {
-            //if (!initializing) delay(50L)
-            myColumns[i].refill()
-        }
+        dropAndRefill()
         if (!initializing) delay(100L)
 
         if (!this.checkForCombos(initializing)) return
     }
 
+    private fun dropAndRefill(){
+        this.dropCurrentTokens()
+        for (i in 0 until width) myColumns[i].refill()
+    }
+
     private fun searchForAndExplode(bombsToExplode: MutableList<Token>) {
         for (i in 0 until width) {
             for (j in 0 until height) {
-                val currenCell = myColumns[i].getCellAtIndex(j)
-                if (bombsToExplode.any { it === currenCell.getCellValue() })
-                    currenCell.explode(Pair(i, j), this)
+                val currentCell = myColumns[i].getCellAtIndex(j)
+                if (bombsToExplode.any { it === currentCell.getCellValue() })
+                    currentCell.explode(Pair(i, j), this)
             }
         }
     }
@@ -264,13 +264,11 @@ class GameBoard(private val width : Int, private val height : Int, private val r
             doMovement(movement)
             if (!checkForCombos(false)) undoLastMovement()
         }
-
-        println("END OF MOVEMENT")
         println("PUNTOS ACTUALES: " + score.currentPoints) //TODO borrar
         return true
     }
 
-    fun setRuleSetChange() {
+    fun doWeatherEvent() {
         ruleSet.weatherEvent(this)
     }
 

@@ -1,8 +1,6 @@
 package com.example.tptdl.weatherAPI
 
 import android.app.Activity
-import android.content.Context
-import com.example.tptdl.LevelActivity
 import com.example.tptdl.R
 import com.example.tptdl.gamelogic.gameboard.GameBoard
 import com.example.tptdl.gamelogic.gameboard.RuleSet
@@ -20,7 +18,7 @@ abstract class WeatherState : RuleSet, Serializable, Observable() {
 
     override fun obtainBombRates(): Int { return 5 }
 
-    abstract fun getMapBackgroundIdName() : String
+    abstract fun getMapBackgroundPath(): Int
 
     override fun getBombPath() : Int { return R.drawable.bomb_normal }
 

@@ -1,7 +1,6 @@
 package com.example.tptdl.weatherAPI
 
 import com.example.tptdl.R
-import com.example.tptdl.gamelogic.gameboard.GameBoard
 
 class Hot : WeatherState() {
 
@@ -9,8 +8,8 @@ class Hot : WeatherState() {
         return "Hot"
     }
 
-    override fun getMapBackgroundIdName(): String {
-        return "ic_map_hot" //TODO getPath not IdName
+    override fun getMapBackgroundPath(): Int {
+        return R.drawable.ic_map_hot
     }
 
     override fun getBombPath(): Int {

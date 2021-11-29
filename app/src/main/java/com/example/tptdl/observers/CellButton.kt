@@ -30,8 +30,6 @@ class CellButton(val context : LevelActivity, row : TableRow, lenght : Int) : Ob
         button.setOnClickListener {
             GlobalScope.launch { context.makeMovement(this@CellButton) }
         }
-
-        context.printeameEsta()
     }
 
     fun setCell(c: Cell) {

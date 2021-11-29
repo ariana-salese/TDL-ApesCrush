@@ -36,7 +36,6 @@ class LevelActivity : AppCompatActivity(), Observer{
         val widthBoardPixels = (widthScreenPixels * 0.9).roundToInt()
 
         userData = UserData(this)
-        println("LEVEL ACTIVITY (onCreate): ${userData.getLastAvailableLevel()}") //TODO eliminar
 
         //Setting level number
         levelNumber = intent.getSerializableExtra("levelNumber") as Int
@@ -61,7 +60,6 @@ class LevelActivity : AppCompatActivity(), Observer{
                 cell.update(null,null)
             }
         }
-
     }
 
     private fun createBoard(widthBoardPixels: Int) {
@@ -97,7 +95,6 @@ class LevelActivity : AppCompatActivity(), Observer{
 
         val movementDone = GlobalScope.async { game.tryMovement(clickedButton!!.getCell(), button.getCell()) }
 
-        println("DISABLE")
         disableCells()
 
         clickedButton = if(movementDone.await()) {
@@ -107,7 +104,6 @@ class LevelActivity : AppCompatActivity(), Observer{
             button
         }
 
-        println("ENABLE")
         enableCells()
 
         if(movementDone.await()) {
@@ -146,9 +142,5 @@ class LevelActivity : AppCompatActivity(), Observer{
                 cell.update(null, null)
             }
         }
-    }
-
-    fun printeameEsta() {
-        println("esta")
     }
 }

@@ -26,14 +26,13 @@ class WeatherService : Service() {
 
     override fun onCreate() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        Toast.makeText(this, "creating service", Toast.LENGTH_SHORT).show()
     }
 
     override fun onBind(intent: Intent): IBinder {
         return binder
     }
 
-    fun getCurrentWeather() : WeatherState? {
+    fun getCurrentWeather() : WeatherState? { //TODO usar o eliminar
         if(!this::currentWeather.isInitialized) return null
         return currentWeather
     }
@@ -42,12 +41,7 @@ class WeatherService : Service() {
 
         val location = GlobalScope.async{ getLocation() }
 
-        if(location.await() == null){
-            println("No location available")
-            return null
-        }
-
-        println("LOCATION: LAT: " + location.await()!!.latitude + " LON: " + location.await()!!.longitude)
+        if(location.await() == null) return null
 
         val weather = Weather()
 
@@ -60,37 +54,7 @@ class WeatherService : Service() {
 
         if (!checkForPermissions()) return null
 
-        val lastLocation = GlobalScope.async{getLastLocation()}
-        if(lastLocation.await() != null) return lastLocation.await()
-
-        println("Fetching current location")
-
         return withContext(Dispatchers.IO) { getCurrentLocation() }
-    }
-
-    private fun getLastLocation() : Location? {
-
-        return try{
-            Tasks.await(fusedLocationClient.lastLocation)
-            null // Esto hace que no se pueda usar la ubicación guardada en el caché, y siempre se actualize TODO Luego lo sacamos
-        } catch (e: SecurityException){
-            println("No permissions - last location")
-            null
-        } catch (e: Exception){
-            println(e)
-            null
-        }
-    }
-
-    override fun onUnbind(intent: Intent?): Boolean {
-        Toast.makeText(this, "Unbinding service", Toast.LENGTH_SHORT).show()
-        return super.onUnbind(intent)
-    }
-
-    override fun onDestroy() {
-        Toast.makeText(this, "service Disconnected", Toast.LENGTH_SHORT).show()
-        println("Disconnected on service")
-        super.onDestroy()
     }
 
     private fun getCurrentLocation() : Location? {
@@ -100,7 +64,6 @@ class WeatherService : Service() {
         return try{
             Tasks.await(fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY,cancellationSource.token))
         } catch (e: SecurityException) {
-            println("No permissions - current location")
             null
         } catch (e: Exception) {
             println(e)
