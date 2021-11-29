@@ -2,6 +2,7 @@ package com.example.tptdl.weatherAPI
 
 import android.app.Activity
 import android.content.Context
+import com.example.tptdl.LevelActivity
 import com.example.tptdl.R
 import com.example.tptdl.gamelogic.gameboard.GameBoard
 import com.example.tptdl.gamelogic.gameboard.RuleSet
@@ -13,6 +14,8 @@ abstract class WeatherState : RuleSet, Serializable, Observable() {
     que debe hacer GameBoard, esta clase la paso a que implemente metodos comunes entre los
     distintos tipos de climas.
      */
+    var context : Activity? = null
+
     abstract override fun toString() : String
 
     override fun obtainBombRates(): Int { return 5 }
@@ -25,5 +28,7 @@ abstract class WeatherState : RuleSet, Serializable, Observable() {
 
     override fun weatherEvent(gameBoard: GameBoard) { return }
 
-    open suspend fun starAnimation(context: Activity) { return }
+    open suspend fun starAnimation() { return }
+
+    fun setActivityContext(context: Activity){ this.context = context }
 }

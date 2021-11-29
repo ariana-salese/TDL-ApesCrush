@@ -8,7 +8,9 @@ import com.example.tptdl.R
 import com.example.tptdl.gamelogic.gameboard.GameBoard
 import kotlinx.coroutines.runBlocking
 import android.view.animation.Animation
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class Rainy : WeatherState() {
@@ -22,8 +24,8 @@ class Rainy : WeatherState() {
     }
 
     override fun weatherEvent(gameBoard: GameBoard) {
-        setChanged()
-        notifyObservers() //TODO sacar observer
+
+        GlobalScope.launch { starAnimation() }
 
         runBlocking {
             delay(600L)
@@ -33,9 +35,11 @@ class Rainy : WeatherState() {
         println("FLOOD")
     }
 
-    override suspend fun starAnimation(context: Activity) {
-        println("FLOOD ANIMATION")
-        val water = context.findViewById<ImageView>(R.id.floodImage)
+    override suspend fun starAnimation() {
+
+        if(context == null) return
+
+        val water = context?.findViewById<ImageView>(R.id.floodImage)
         val duration = 1500L
 
         val animationUp = TranslateAnimation(0f, 0f, 0f, -1000f)
@@ -44,10 +48,8 @@ class Rainy : WeatherState() {
         val animationDown = TranslateAnimation(0f, 0f, -1000f, 0f)
         animationDown.duration = duration
 
-        water.startAnimation(animationUp)
+        water?.startAnimation(animationUp)
         delay(duration)
-        water.startAnimation(animationDown)
+        water?.startAnimation(animationDown)
     }
-
-
 }

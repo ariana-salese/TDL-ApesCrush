@@ -7,7 +7,6 @@ import android.widget.*
 import kotlin.math.roundToInt
 import android.widget.LinearLayout
 import com.example.tptdl.gamelogic.Game
-import com.example.tptdl.observers.Animator
 import com.example.tptdl.observers.CellButton
 import com.example.tptdl.weatherAPI.WeatherState
 import kotlinx.coroutines.GlobalScope
@@ -49,7 +48,7 @@ class LevelActivity : AppCompatActivity(), Observer{
         currentWeather = intent.getSerializableExtra("weather") as WeatherState
         val background = findViewById<ImageView>(R.id.backgroundImageLevel)
         background.setImageResource(resources.getIdentifier("level_${currentWeather.toString().lowercase()}", "drawable", this.packageName))
-        currentWeather.addObserver(Animator(this))
+        currentWeather.setActivityContext(this)
 
         levelNumber = intent.getSerializableExtra("levelNumber") as Int
 
