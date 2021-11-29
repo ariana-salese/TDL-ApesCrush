@@ -145,11 +145,12 @@ class GameBoard(private val width : Int, private val height : Int, private val r
     board will be created.
      */
     suspend fun shuffle() {
+        delay(150L)
         for (i in 0 until width) {
-            delay(150L)
+            delay(200L)
             myColumns[i].shuffle()
         }
-        delay(100L)
+        delay(250L)
         checkForCombos()
     }
 

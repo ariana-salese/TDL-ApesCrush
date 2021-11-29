@@ -40,10 +40,20 @@
         android:layout_marginBottom="4dp"
         android:scaleType="fitXY"
         android:translationY="750dp"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/flood"/>
+
+    <ImageView
+        android:id="@+id/tornadoImage"
+        android:layout_width="376dp"
+        android:layout_height="545dp"
+        android:scaleType="fitXY"
+        android:translationX="-425dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/tornado" />
 
     <TextView
         android:id="@+id/levelText"
