@@ -4,12 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.widget.*
-import com.example.tptdl.gamelogic.MovementsCounter
-import com.example.tptdl.gamelogic.Score
-import com.example.tptdl.gamelogic.gameboard.GameBoard
 import kotlin.math.roundToInt
 import android.widget.LinearLayout
 import com.example.tptdl.gamelogic.Game
+import com.example.tptdl.observers.Animator
+import com.example.tptdl.observers.CellButton
 import com.example.tptdl.weatherAPI.WeatherState
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -50,6 +49,7 @@ class LevelActivity : AppCompatActivity(), Observer{
         currentWeather = intent.getSerializableExtra("weather") as WeatherState
         val background = findViewById<ImageView>(R.id.backgroundImageLevel)
         background.setImageResource(resources.getIdentifier("level_${currentWeather.toString().lowercase()}", "drawable", this.packageName))
+        currentWeather.addObserver(Animator(this))
 
         levelNumber = intent.getSerializableExtra("levelNumber") as Int
 
@@ -147,5 +147,9 @@ class LevelActivity : AppCompatActivity(), Observer{
                 cell.update(null, null)
             }
         }
+    }
+
+    fun printeameEsta() {
+        println("esta")
     }
 }

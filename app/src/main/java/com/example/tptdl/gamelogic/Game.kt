@@ -1,6 +1,6 @@
 package com.example.tptdl.gamelogic
 
-import com.example.tptdl.CellButton
+import com.example.tptdl.observers.CellButton
 import com.example.tptdl.gamelogic.gameboard.Cell
 import com.example.tptdl.gamelogic.gameboard.GameBoard
 import com.example.tptdl.weatherAPI.WeatherState

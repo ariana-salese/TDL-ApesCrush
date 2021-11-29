@@ -1,10 +1,11 @@
-package com.example.tptdl
+package com.example.tptdl.observers
 
 import android.graphics.Color
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TableRow
 import androidx.core.view.setPadding
+import com.example.tptdl.LevelActivity
 import com.example.tptdl.gamelogic.gameboard.Cell
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -30,6 +31,8 @@ class CellButton(val context : LevelActivity, row : TableRow, lenght : Int) : Ob
         button.setOnClickListener {
             GlobalScope.launch { context.makeMovement(this@CellButton) }
         }
+
+        context.printeameEsta()
     }
 
     fun setCell(c: Cell) {
@@ -52,6 +55,9 @@ class CellButton(val context : LevelActivity, row : TableRow, lenght : Int) : Ob
     fun changeBackground(color : String, opacity : Int) {
         button.setBackgroundColor(Color.parseColor(color))
         button.background.alpha = opacity
+
+        println("x position: ${button.x}")
+        println("y position: ${button.y}")
     }
 
     fun disable() {

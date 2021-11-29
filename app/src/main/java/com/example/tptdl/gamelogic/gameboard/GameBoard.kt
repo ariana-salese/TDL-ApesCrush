@@ -1,6 +1,6 @@
 package com.example.tptdl.gamelogic.gameboard
 
-import com.example.tptdl.CellButton
+import com.example.tptdl.observers.CellButton
 import com.example.tptdl.gamelogic.Score
 import com.example.tptdl.gamelogic.tokens.Token
 import com.example.tptdl.gamelogic.tokens.Void
