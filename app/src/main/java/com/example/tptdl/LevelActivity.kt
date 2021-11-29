@@ -23,6 +23,7 @@ class LevelActivity : AppCompatActivity(), Observer{
     private val buttonList : MutableList<MutableList<CellButton>> = mutableListOf()
     private lateinit var currentWeather : WeatherState
     private lateinit var userData : UserData
+    private lateinit var remainingMovementsText : TextView
     private var levelNumber by Delegates.notNull<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +44,9 @@ class LevelActivity : AppCompatActivity(), Observer{
         val levelText = "Level $levelNumber" //cant concatenate while setting new text
         levelTextView.text = levelText
 
+        //Setting remaining movements text
+        remainingMovementsText = findViewById(R.id.movementsText)
+
         //Setting background according to weather
         currentWeather = intent.getSerializableExtra("weather") as WeatherState
         val background = findViewById<ImageView>(R.id.backgroundImageLevel)
@@ -53,6 +57,7 @@ class LevelActivity : AppCompatActivity(), Observer{
 
         game = Game(levelNumber, currentWeather, boardWidth, boardHeight)
 
+        updateMovementsText()
         createBoard(widthBoardPixels)
 
         buttonList.forEach { row ->
@@ -109,8 +114,15 @@ class LevelActivity : AppCompatActivity(), Observer{
         if(movementDone.await()) {
             if(game.checkWin()) gameWon()
             if(game.checkLose()) println("LOSE")
+            updateMovementsText()
         }
+    }
 
+    private fun updateMovementsText(){
+        val text = "Remaining Movements: ${game.getRemainingMovements()}"
+        this@LevelActivity.runOnUiThread {
+            remainingMovementsText.text = text
+        }
     }
 
     fun enableCells() {

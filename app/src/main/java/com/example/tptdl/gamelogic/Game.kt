@@ -28,7 +28,7 @@ class Game (private val levelNumber : Int, private val currentWeather : WeatherS
     }
 
     private fun checkForWeatherEvent() {
-        if (movementsCounter.getRemainingMovements() % 2 == 0) gameboard.doWeatherEvent()
+        if (movementsCounter.getRemainingMovements() % 5 == 0) gameboard.doWeatherEvent()
     }
 
     fun checkWin() : Boolean{
@@ -37,6 +37,10 @@ class Game (private val levelNumber : Int, private val currentWeather : WeatherS
 
     fun checkLose() : Boolean{
         return movementsCounter.checkIfLoss()
+    }
+
+    fun getRemainingMovements(): Int {
+        return movementsCounter.getRemainingMovements()
     }
 
     fun linkObservers(buttonList: MutableList<MutableList<CellButton>>) {
