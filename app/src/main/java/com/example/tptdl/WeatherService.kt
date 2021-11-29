@@ -40,7 +40,7 @@ class WeatherService : Service() {
 
     suspend fun updateWeather() : WeatherState? {
 
-        val location = GlobalScope.async{getLocation()}
+        val location = GlobalScope.async{ getLocation() }
 
         if(location.await() == null){
             println("No location available")
