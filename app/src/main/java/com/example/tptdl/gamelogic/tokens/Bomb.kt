@@ -6,7 +6,7 @@ import com.example.tptdl.gamelogic.gameboard.GameBoard
 import com.example.tptdl.gamelogic.gameboard.RuleSet
 
 // For now this class will implement Token
-class Bomb(val ruleSet: RuleSet) : Token() {   // explosionRadius is a 3x3 by default, it should always be an odd number
+class Bomb(val ruleSet: RuleSet) : Explosive {   // explosionRadius is a 3x3 by default, it should always be an odd number
     private var canBeExploded = true
     override val pointValue = 0
     private var explosionRadius = ruleSet.obtainExplosionRadius()
@@ -46,4 +46,5 @@ class Bomb(val ruleSet: RuleSet) : Token() {   // explosionRadius is a 3x3 by de
     override fun getPath() : Int {
         return ruleSet.getBombPath()
     }
+
 }

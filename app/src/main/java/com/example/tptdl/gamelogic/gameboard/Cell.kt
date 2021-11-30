@@ -1,6 +1,7 @@
 package com.example.tptdl.gamelogic.gameboard
 
 import com.example.tptdl.gamelogic.Score
+import com.example.tptdl.gamelogic.tokens.Explosive
 import com.example.tptdl.gamelogic.tokens.Token
 import com.example.tptdl.gamelogic.tokens.TokenRandomizer
 import com.example.tptdl.gamelogic.tokens.Void
@@ -40,7 +41,7 @@ class Cell(private var value: Token, private val randomizer: TokenRandomizer? = 
 
     fun explode(cellCoords: Pair<Int, Int>, gameBoard: GameBoard) {
         if (!value.isExplosive()) return
-        value.explode(cellCoords, gameBoard)
+        (value as Explosive).explode(cellCoords, gameBoard)
     }
 
     fun pop(score : Score? = null) {

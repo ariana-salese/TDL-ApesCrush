@@ -4,6 +4,7 @@ import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import com.example.tptdl.R
 import com.example.tptdl.gamelogic.gameboard.GameBoard
+import com.example.tptdl.gamelogic.tokens.Token
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -11,6 +12,8 @@ import kotlinx.coroutines.launch
 
 
 class Rainy : WeatherState() {
+
+    // init {}  here, any weather specific tokens would be added with weatherSpecificTokens.add(NameOfToken())
 
     override fun toString() : String {
         return "Rainy"
@@ -51,4 +54,9 @@ class Rainy : WeatherState() {
     override fun copy(): WeatherState {
         return Rainy()
     }
+
+    override fun retrieveTokens(): MutableList<Token> {
+        return weatherSpecificTokens
+    }
+
 }

@@ -5,6 +5,7 @@ import com.example.tptdl.gamelogic.tokens.TokenRandomizer
 open class Line(private val size : Int, private val ruleSet: RuleSet) {
     protected val myCells : MutableList<Cell> = mutableListOf()
     private val randomizer : TokenRandomizer = TokenRandomizer(ruleSet)
+    private val requiredCellsForCombo : Int = 3
 
     init {
         for (i in 0 until size) {
@@ -37,9 +38,10 @@ open class Line(private val size : Int, private val ruleSet: RuleSet) {
     }
 
     fun getAllCombos() : MutableList<Cell> {
-        if (size < 3) throw Exception("No possible combos") //TODO, porque se tira una excepcion en vez de una lista vacia y fue?
 
         val listOfCellsInCombos : MutableList<Cell> = mutableListOf()
+
+        if (size < requiredCellsForCombo) { return listOfCellsInCombos }
 
         for (i in 0 until size - 2) {
             val listOfCellsToCheck = listOf(myCells[i], myCells[i + 1], myCells[i + 2])

@@ -2,7 +2,10 @@ package com.example.tptdl.gamelogic.tokens
 
 import com.example.tptdl.gamelogic.Score
 
-abstract class Fruit : Token() {
+interface Fruit : Token {
 
-    abstract override fun toString(): String
+    override fun isExplosive() : Boolean {
+        return false
+    }
+
 }

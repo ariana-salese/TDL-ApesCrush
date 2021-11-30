@@ -296,27 +296,24 @@ class GameBoard(private val width : Int, private val height : Int, private val r
 
     internal suspend fun repopulateBoardTESTING(initializing: Boolean, bombsToExplode : MutableList<Token>? = null) {  // internal function to test repopulateBoard()
         if (!initializing) delay(500L)
-        this.dropCurrentTokens()
-        for (i in 0 until width) {
-            if (!initializing) delay(50L)
-            myColumns[i].refill()
-        }
+
+        dropAndRefill()
+        if (!initializing) delay(100L)
+
         println("Board after repopulation:")
         this.printBoard()
 
         if (bombsToExplode != null) {
             if (bombsToExplode.isNotEmpty()) {
                 this.searchForAndExplode(bombsToExplode)
+                if (!initializing) delay(500L)
             }
         }
         println("Board after bombs are exploded:")
-        this.printBoard()
 
-        this.dropCurrentTokens()
-        for (i in 0 until width) {
-            if (!initializing) delay(50L)
-            myColumns[i].refill()
-        }
+        dropAndRefill()
+        if (!initializing) delay(100L)
+
         println("Board after repopulation:")
         this.printBoard()
 
@@ -329,13 +326,13 @@ class GameBoard(private val width : Int, private val height : Int, private val r
         println("Board before combos identified and emptied:")
         this.printBoard()
         for (i in 0 until width) {
-            //println("THIS IS IN COMBOS: " + (myColumns[i].getAllCombos().toString()))
-            //println("stop")
+            //myColumns[i].printLine()
+            println("THIS IS IN COMBOS: " + (myColumns[i].getAllCombos().toString()))
             markedForRemoval.addAll(myColumns[i].getAllCombos())
         }
         for (i in 0 until height) {
-            //println("THIS IS IN COMBOS: " + (myRows[i].getAllCombos().toString()))
-            //println("stop")
+            //myRows[i].printLine()
+            println("THIS IS IN COMBOS: " + (myRows[i].getAllCombos().toString()))
             markedForRemoval.addAll(myRows[i].getAllCombos())
         }
 
