@@ -11,4 +11,8 @@ class Normal : WeatherState(){
     override fun getMapBackgroundPath(): Int {
         return R.drawable.ic_map_normal
     }
+
+    override fun copy(): WeatherState {
+        return Normal()
+    }
 }

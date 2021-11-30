@@ -1,11 +1,13 @@
 package com.example.tptdl
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.widget.*
 import kotlin.math.roundToInt
 import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import com.example.tptdl.gamelogic.Game
 import com.example.tptdl.observers.CellButton
 import com.example.tptdl.weatherAPI.WeatherState
@@ -20,12 +22,12 @@ class LevelActivity : AppCompatActivity(){
     private val boardWidth = 6
     private var clickedButton : CellButton? = null
     private lateinit var game: Game
-    private val buttonList : MutableList<MutableList<CellButton>> = mutableListOf()
+    private var buttonList : MutableList<MutableList<CellButton>> = mutableListOf()
     private lateinit var currentWeather : WeatherState
     private lateinit var userData : UserData
     private lateinit var remainingMovementsText : TextView
     private var levelNumber by Delegates.notNull<Int>()
-
+    private var widthBoardPixels by Delegates.notNull<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +37,7 @@ class LevelActivity : AppCompatActivity(){
         val displayMetrics = DisplayMetrics()
         windowManager.getDefaultDisplay().getMetrics(displayMetrics) //TODO usar cosas no deprecadas
         val widthScreenPixels = displayMetrics.widthPixels
-        val widthBoardPixels = (widthScreenPixels * 0.9).roundToInt()
+        widthBoardPixels = (widthScreenPixels * 0.9).roundToInt()
 
         userData = UserData(this)
 
@@ -85,6 +87,8 @@ class LevelActivity : AppCompatActivity(){
             buttonList.add(buttonListRow)
             table.addView(currentRow)
         }
+        println("BUTTONLIST SIZE = ${buttonList.size}")
+
         game.linkObservers(buttonList)
     }
 
@@ -102,7 +106,7 @@ class LevelActivity : AppCompatActivity(){
 
         disableCells()
 
-        clickedButton = if(movementDone.await()) {
+        clickedButton = if (movementDone.await()) {
             null
         } else {
             button.changeBackground("#d9d9d9", 100)
@@ -111,9 +115,14 @@ class LevelActivity : AppCompatActivity(){
 
         enableCells()
 
-        if(movementDone.await()) {
-            if(game.checkWin()) gameWon()
-            if(game.checkLose()) println("LOSE")
+        if (movementDone.await()) {
+            this@LevelActivity.runOnUiThread {
+                if (game.checkWin()) {
+                    levelNumber += 1
+                    gameFinished("Next", "Congrats!")
+                }
+                else if (game.checkLose()) gameFinished("Restart", "You lose, nice try...")
+            }
             updateMovementsText()
         }
     }
@@ -125,7 +134,7 @@ class LevelActivity : AppCompatActivity(){
         }
     }
 
-    fun enableCells() {
+    private fun enableCells() {
         buttonList.forEach {
             it.forEach { cellButton->
                 cellButton.enable()
@@ -133,7 +142,7 @@ class LevelActivity : AppCompatActivity(){
         }
     }
 
-    fun disableCells() {
+    private fun disableCells() {
         buttonList.forEach {
             it.forEach { cellButton->
                 cellButton.disable()
@@ -141,15 +150,40 @@ class LevelActivity : AppCompatActivity(){
         }
     }
 
-    private fun gameWon() {
-        println("WIN")
-        if (true) userData.saveLastAvailableLevel(15) //TODO si gana (level number + 1)
-        println("LEVEL ACTIVITY (ifWin): ${userData.getLastAvailableLevel()}")
+    private fun gameFinished(nextButtonText : String, endText : String) {
+        //println("WIN")
+
+        if (levelNumber > userData.getLastAvailableLevel()) userData.saveLastAvailableLevel(levelNumber)
+        findViewById<TableLayout>(R.id.gameBoardLayout).isVisible = false
+
+        val endScreen = findViewById<LinearLayout>(R.id.endScreen)
+        endScreen.isVisible = true
+
+        val exitButton = findViewById<Button>(R.id.exitButton)
+        val nextButton = findViewById<Button>(R.id.nextLevelButton)
+        val titleScreen = findViewById<TextView>(R.id.endText)
+
+        exitButton.text = "Menu"
+        nextButton.text = nextButtonText
+        titleScreen.text = endText
+
+        exitButton.setOnClickListener {
+            val openMainActivity = Intent(this@LevelActivity, MainActivity::class.java)
+            openMainActivity.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+            startActivityIfNeeded(openMainActivity, 0)
+        }
+
+        nextButton.setOnClickListener {
+            val intent = Intent(this, LevelActivity::class.java)
+
+            //A copy is needed to use it as Serializable again
+            val weather : WeatherState = currentWeather.copy()
+
+            intent.putExtra("weather", weather)
+            intent.putExtra("levelNumber", UserData(this).getLastAvailableLevel())
+            startActivity(intent)
+        }
+
         //TODO cerrar nivel, volver al mapa? o pantalla de congrats con boton siguiente y creamos otro nivel?
     }
-
-
-        //println( "PUNTAJE DE BARRA"+game.getScore().currentPoints)
-        //scoreProgressBar.setProgress(game.getScore().currentPoints)
-
 }

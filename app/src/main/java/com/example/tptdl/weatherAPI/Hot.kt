@@ -20,4 +20,8 @@ class Hot : WeatherState() {
         return 5
     }
 
+    override fun copy(): WeatherState {
+        return Hot()
+    }
+
 }

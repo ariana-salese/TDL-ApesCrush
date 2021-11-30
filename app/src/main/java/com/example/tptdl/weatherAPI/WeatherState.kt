@@ -29,4 +29,7 @@ abstract class WeatherState : RuleSet, Serializable, Observable() {
     open suspend fun starAnimation() { return }
 
     fun setActivityContext(context: Activity){ this.context = context }
+
+    //A copy is needed to use it as Serializable again
+    abstract fun copy() : WeatherState
 }

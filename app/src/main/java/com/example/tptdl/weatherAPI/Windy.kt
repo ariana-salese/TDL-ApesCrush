@@ -37,4 +37,8 @@ class Windy : WeatherState() {
 
         tornado?.startAnimation(animation)
     }
+
+    override fun copy(): WeatherState {
+        return Windy()
+    }
 }

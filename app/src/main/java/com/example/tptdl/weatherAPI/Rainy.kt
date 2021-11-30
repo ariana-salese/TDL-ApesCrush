@@ -47,4 +47,8 @@ class Rainy : WeatherState() {
         delay(duration)
         water?.startAnimation(animationDown)
     }
+
+    override fun copy(): WeatherState {
+        return Rainy()
+    }
 }

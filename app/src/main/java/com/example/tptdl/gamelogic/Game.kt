@@ -8,7 +8,7 @@ import com.example.tptdl.observers.ProgressBar
 import com.example.tptdl.weatherAPI.WeatherState
 
 
-class Game(private val levelNumber: Int, private val currentWeather: WeatherState, boardWidth: Int, boardHeight: Int, progressBar: android.widget.ProgressBar){
+class Game(levelNumber: Int, private val currentWeather: WeatherState, boardWidth: Int, boardHeight: Int, progressBar: android.widget.ProgressBar){
 
     private var gameboard: GameBoard
     private var score: Score = Score(2000 + levelNumber * 100)
@@ -20,7 +20,7 @@ class Game(private val levelNumber: Int, private val currentWeather: WeatherStat
         score.addObserver(scoreProgressBar)
     }
 
-    fun tryMovement(cell1: Cell, cell2: Cell) : Boolean{
+    fun tryMovement(cell1: Cell, cell2: Cell) : Boolean {
 
         val points = score.currentPoints
         val movementDone = gameboard.tryMovement(cell1, cell2)
@@ -38,7 +38,7 @@ class Game(private val levelNumber: Int, private val currentWeather: WeatherStat
         if (movementsCounter.getRemainingMovements() % 5 == 0) gameboard.doWeatherEvent()
     }
 
-    fun checkWin() : Boolean{
+    fun checkWin() : Boolean {
         return score.checkIfWin()
     }
 
