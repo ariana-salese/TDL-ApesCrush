@@ -14,6 +14,7 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import com.example.tptdl.weatherAPI.*
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -132,8 +133,11 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
         val weatherIcon : ImageView = findViewById(R.id.weatherIcon)
         val weatherText : TextView = findViewById(R.id.weatherText)
+        val progressBar : ProgressBar = findViewById(R.id.progressBarWeather)
 
         this@MainActivity.runOnUiThread {
+            weatherIcon.isVisible = true
+            progressBar.isVisible = false
             weatherIcon.setImageResource(resources.getIdentifier(currentWeather.toString().lowercase(), "drawable", this.packageName))
             weatherText.text = currentWeather.toString()
         }

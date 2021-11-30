@@ -48,6 +48,7 @@ class WeatherService : Service() {
         currentWeather = weather.fetchCurrent(location.await())
 
         return currentWeather
+
     }
 
     private suspend fun getLocation() : Location? {
