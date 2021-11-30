@@ -37,10 +37,10 @@ class Rainy : WeatherState() {
         val water = context?.findViewById<ImageView>(R.id.floodImage)
         val duration = 1500L
 
-        val animationUp = TranslateAnimation(0f, 0f, 0f, -1000f)
+        val animationUp = TranslateAnimation(0f, 1000f, 0f, -1000f)
         animationUp.duration = duration
 
-        val animationDown = TranslateAnimation(0f, 0f, -1000f, 0f)
+        val animationDown = TranslateAnimation(1000f, 0f, -1000f, 0f)
         animationDown.duration = duration
 
         water?.startAnimation(animationUp)

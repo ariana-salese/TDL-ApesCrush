@@ -26,8 +26,11 @@ class Game(private val levelNumber: Int, private val currentWeather: WeatherStat
         val movementDone = gameboard.tryMovement(cell1, cell2)
         if(movementDone) movementsCounter.executeMovement()
 
-        if(score.currentPoints == points) movementsCounter.undoMovement()
-        else checkForWeatherEvent()
+        // When movement was done, (tried to switch two cells but no combos were possible)
+        if(score.currentPoints == points && movementDone) movementsCounter.undoMovement()
+
+        else if(movementDone) checkForWeatherEvent()
+
         return  movementDone
     }
 
