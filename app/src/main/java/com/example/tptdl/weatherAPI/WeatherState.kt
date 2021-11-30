@@ -4,15 +4,15 @@ import android.app.Activity
 import com.example.tptdl.R
 import com.example.tptdl.gamelogic.gameboard.GameBoard
 import com.example.tptdl.gamelogic.gameboard.RuleSet
+import com.example.tptdl.gamelogic.tokens.Token
 import java.io.Serializable
 import java.util.*
 
 abstract class WeatherState : RuleSet, Serializable, Observable() {
-    /* cree la clase RuleSet (set de reglas) que ahora se le pasa a GameBoard y esa clase sabra lo
-    que debe hacer GameBoard, esta clase la paso a que implemente metodos comunes entre los
-    distintos tipos de climas.
-     */
+
     var context : Activity? = null
+
+    val weatherSpecificTokens : MutableList<Token> = mutableListOf() // each WeatherState may have a list of tokens specific to it
 
     abstract override fun toString() : String
 

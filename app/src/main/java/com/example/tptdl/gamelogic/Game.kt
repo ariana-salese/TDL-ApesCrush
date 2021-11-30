@@ -1,23 +1,22 @@
 package com.example.tptdl.gamelogic
 
-import com.example.tptdl.R
 import com.example.tptdl.observers.CellButton
 import com.example.tptdl.gamelogic.gameboard.Cell
 import com.example.tptdl.gamelogic.gameboard.GameBoard
-import com.example.tptdl.observers.ProgressBar
+import com.example.tptdl.observers.ProgressBarObserver
 import com.example.tptdl.weatherAPI.WeatherState
 
 
-class Game(levelNumber: Int, private val currentWeather: WeatherState, boardWidth: Int, boardHeight: Int, progressBar: android.widget.ProgressBar){
+
+class Game(levelNumber: Int, private val currentWeather: WeatherState, boardWidth: Int, boardHeight: Int){
+
 
     private var gameboard: GameBoard
     private var score: Score = Score(2000 + levelNumber * 100)
     private var movementsCounter: MovementsCounter = MovementsCounter()
-    private var scoreProgressBar : ProgressBar = ProgressBar(score.winThreshold, progressBar)
 
     init {
         gameboard = GameBoard(boardWidth, boardHeight, currentWeather, score)
-        score.addObserver(scoreProgressBar)
     }
 
     fun tryMovement(cell1: Cell, cell2: Cell) : Boolean {
@@ -50,7 +49,11 @@ class Game(levelNumber: Int, private val currentWeather: WeatherState, boardWidt
         return movementsCounter.getRemainingMovements()
     }
 
-    fun linkObservers(buttonList: MutableList<MutableList<CellButton>>) {
+    fun linkGameboardObservers(buttonList: MutableList<MutableList<CellButton>>) {
         gameboard.linkObservers(buttonList)
+    }
+
+    fun linkScoreObserver(progressBar : ProgressBarObserver){
+        score.linkObserver(progressBar)
     }
 }

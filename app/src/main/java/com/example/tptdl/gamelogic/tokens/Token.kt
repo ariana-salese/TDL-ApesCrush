@@ -1,26 +1,24 @@
 package com.example.tptdl.gamelogic.tokens
 import com.example.tptdl.gamelogic.gameboard.GameBoard
 
-abstract class Token {
+interface Token {
 
-    abstract val pointValue : Int
-    abstract override fun toString(): String
+    val pointValue : Int
+
+    override fun toString(): String
 
     fun isEqual(anotherToken : Token) : Boolean {
         return this.toString() == anotherToken.toString()
     }
-    open fun getPath() : Int {
-        return 0
-    }
-    open fun isEmpty() : Boolean {
+
+    fun getPath() : Int 
+
+    fun isEmpty() : Boolean {
         return false
     }
 
-    open fun isExplosive() : Boolean {
-        return false
-    }
+    fun isExplosive() : Boolean
 
-    open fun explode(cellCoords: Pair<Int, Int>, gameBoard: GameBoard) { return }   // will try to find a work around this
+    fun getValue() : Int { return pointValue }
 
-    fun getValue() : Int {return pointValue}
 }
