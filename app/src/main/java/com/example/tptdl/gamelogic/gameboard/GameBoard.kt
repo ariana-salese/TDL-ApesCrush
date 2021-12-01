@@ -264,7 +264,7 @@ class GameBoard(private val width : Int, private val height : Int, private val r
             doMovement(movement)
             if (!checkForCombos(false)) undoLastMovement()
         }
-        println("PUNTOS ACTUALES: " + score.currentPoints) //TODO borrar
+
         return true
     }
 
@@ -381,5 +381,4 @@ class GameBoard(private val width : Int, private val height : Int, private val r
     lo dejaria porque es un metodo que si se quisiese implementar de otra manera se podria usar
     si eso lo movemos al fondo del archivo.
      */
-
 }

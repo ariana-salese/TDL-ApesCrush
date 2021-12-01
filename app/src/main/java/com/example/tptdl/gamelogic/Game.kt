@@ -3,13 +3,12 @@ package com.example.tptdl.gamelogic
 import com.example.tptdl.observers.CellButton
 import com.example.tptdl.gamelogic.gameboard.Cell
 import com.example.tptdl.gamelogic.gameboard.GameBoard
-import com.example.tptdl.observers.ProgressBarObserver
+import com.example.tptdl.observers.ScoreObserver
 import com.example.tptdl.weatherAPI.WeatherState
 
 
 
 class Game(levelNumber: Int, private val currentWeather: WeatherState, boardWidth: Int, boardHeight: Int){
-
 
     private var gameboard: GameBoard
     private var score: Score = Score(2000 + levelNumber * 100)
@@ -53,7 +52,7 @@ class Game(levelNumber: Int, private val currentWeather: WeatherState, boardWidt
         gameboard.linkObservers(buttonList)
     }
 
-    fun linkScoreObserver(progressBar : ProgressBarObserver){
-        score.linkObserver(progressBar)
+    fun linkScoreObserver(scoreObserver : ScoreObserver){
+        score.linkObserver(scoreObserver)
     }
 }

@@ -1,6 +1,6 @@
 package com.example.tptdl.gamelogic
 
-import com.example.tptdl.observers.ProgressBarObserver
+import com.example.tptdl.observers.ScoreObserver
 import java.util.*
 
 class Score(private val winThreshold : Int) : Observable() {
@@ -22,9 +22,9 @@ class Score(private val winThreshold : Int) : Observable() {
         notifyObservers(currentPoints)
     }
 
-    fun linkObserver(progressBar: ProgressBarObserver) {
-        this.addObserver(progressBar)
-        progressBar.setMax(winThreshold)
+    fun linkObserver(scoreObserver: ScoreObserver) {
+        this.addObserver(scoreObserver)
+        scoreObserver.setMax(winThreshold)
     }
 
 }

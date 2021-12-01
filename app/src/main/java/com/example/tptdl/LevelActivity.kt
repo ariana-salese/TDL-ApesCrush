@@ -1,5 +1,6 @@
 package com.example.tptdl
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,8 +10,9 @@ import kotlin.math.roundToInt
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import com.example.tptdl.gamelogic.Game
+import com.example.tptdl.gamelogic.gameboard.Line
 import com.example.tptdl.observers.CellButton
-import com.example.tptdl.observers.ProgressBarObserver
+import com.example.tptdl.observers.ScoreObserver
 import com.example.tptdl.weatherAPI.WeatherState
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -28,7 +30,6 @@ class LevelActivity : AppCompatActivity(){
     private lateinit var userData : UserData
     private lateinit var remainingMovementsText : TextView
     private var levelNumber by Delegates.notNull<Int>()
-
     private var widthBoardPixels by Delegates.notNull<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,9 +62,10 @@ class LevelActivity : AppCompatActivity(){
         levelNumber = intent.getSerializableExtra("levelNumber") as Int
 
         game = Game(levelNumber, currentWeather, boardWidth, boardHeight)
-        game.linkScoreObserver(ProgressBarObserver(this))
+        game.linkScoreObserver(ScoreObserver(this))
 
         updateMovementsText()
+
         createBoard(widthBoardPixels)
         buttonList.forEach { row ->
             row.forEach { cell ->
@@ -90,7 +92,7 @@ class LevelActivity : AppCompatActivity(){
             buttonList.add(buttonListRow)
             table.addView(currentRow)
         }
-        println("BUTTONLIST SIZE = ${buttonList.size}")
+
         game.linkGameboardObservers(buttonList)
 
     }
@@ -153,7 +155,6 @@ class LevelActivity : AppCompatActivity(){
         }
     }
 
-
     private fun gameFinished(nextButtonText : String, endText : String) {
         //println("WIN")
 
@@ -187,6 +188,5 @@ class LevelActivity : AppCompatActivity(){
             intent.putExtra("levelNumber", UserData(this).getLastAvailableLevel())
             startActivity(intent)
         }
-        //TODO cerrar nivel, volver al mapa? o pantalla de congrats con boton siguiente y creamos otro nivel?
     }
 }

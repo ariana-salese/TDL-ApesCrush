@@ -145,50 +145,42 @@
 
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/scoreProgressBar"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleX="5"
-        app:layout_constraintBottom_toTopOf="@+id/movementsText"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/levelText"
-        app:layout_constraintVertical_bias="0.03" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.068">
 
-    <TextView
-        android:id="@+id/winThresholdScore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="2"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:textStyle="italic"
-        android:paddingBottom="25dp"
-        app:layout_constraintBottom_toTopOf="@+id/movementsText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toEndOf="@+id/scoreProgressBar"
-        app:layout_constraintTop_toBottomOf="@+id/levelText"
-        app:layout_constraintVertical_bias="0.017" />
+        <TextView
+            android:id="@+id/currentScore"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textAlignment="textEnd"/>
 
-    <TextView
-        android:id="@+id/currentScore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="2"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:textStyle="italic"
-        android:paddingBottom="25dp"
-        app:layout_constraintBottom_toTopOf="@+id/movementsText"
-        app:layout_constraintEnd_toStartOf="@+id/scoreProgressBar"
-        app:layout_constraintHorizontal_bias="0.2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/levelText"
-        app:layout_constraintVertical_bias="0.017" />
+        <ProgressBar
+            android:id="@+id/scoreProgressBar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="80dp"
+            android:scaleX="4"/>
 
+        <TextView
+            android:id="@+id/winThresholdScore"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textAlignment="textStart"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
