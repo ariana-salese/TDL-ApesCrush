@@ -148,10 +148,27 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val selectedWeather = parent?.getItemAtPosition(position)
-        println(selectedWeather)
+        if(selectedWeather == "Automatic"){
+
+            val weatherIcon : ImageView = findViewById(R.id.weatherIcon)
+            val weatherText : TextView = findViewById(R.id.weatherText)
+            val progressBar : ProgressBar = findViewById(R.id.progressBarWeather)
+
+            this@MainActivity.runOnUiThread {
+                weatherIcon.isVisible = false
+                progressBar.isVisible = true
+                weatherText.text = "- - -"
+            }
+
+            updateCurrentWeather()
+        }
+        else{
+            currentWeather = selectedWeather as WeatherState
+            setWeatherIndicator()
+        }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
-        println("NADA SELECCIONADO")
+
     }
 }

@@ -8,7 +8,7 @@ import java.net.URL
 
 const val HOT_TEMP_THRESHOLD = 25 //ºC
 const val COLD_TEMP_THRESHOLD = 15 //ºC
-const val WIND_SPEED_THRESHOLD = 6 //m/s
+const val WIND_SPEED_THRESHOLD = 7 //m/s
 
 class Weather {
 
