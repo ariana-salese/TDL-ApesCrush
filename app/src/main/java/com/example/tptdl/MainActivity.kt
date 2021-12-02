@@ -22,7 +22,8 @@ import kotlinx.coroutines.*
 
 //import androidx.databinding.DataBindingUtil
 
-class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
+class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback,
+    AdapterView.OnItemSelectedListener {
 
     private lateinit var connection: ServiceConnection
 
@@ -56,11 +57,14 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             startActivity(intent)
         }
 
-        val settingsButton: ImageButton = findViewById(R.id.settings_button)
-        settingsButton.setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-        }
+        val listOfWeathers = arrayOf("Automatic", Windy(), Hot(), Cold(), Rainy(), Normal())
+
+        val weatherSelector = findViewById<Spinner>(R.id.weatherSpinner)
+        val arrayAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, listOfWeathers)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        weatherSelector.adapter = arrayAdapter
+        weatherSelector.onItemSelectedListener = this
+
 
         connection = object : ServiceConnection {
             override fun onServiceDisconnected(componentName: ComponentName) {
@@ -130,7 +134,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     }
 
     private fun setWeatherIndicator() {
-
         val weatherIcon : ImageView = findViewById(R.id.weatherIcon)
         val weatherText : TextView = findViewById(R.id.weatherText)
         val progressBar : ProgressBar = findViewById(R.id.progressBarWeather)
@@ -142,5 +145,13 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             weatherText.text = currentWeather.toString()
         }
     }
-}
 
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        val selectedWeather = parent?.getItemAtPosition(position)
+        println(selectedWeather)
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        println("NADA SELECCIONADO")
+    }
+}

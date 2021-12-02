@@ -8,16 +8,6 @@
 
 
 
-    <Switch
-        android:id="@+id/musicSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="176dp"
-        android:minHeight="48dp"
-        android:text="@string/music"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     //TODO agregar climas al spinner para decidir cual usar o Automatico
     <Spinner
