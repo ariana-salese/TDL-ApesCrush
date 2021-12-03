@@ -7,13 +7,14 @@ import android.widget.TableRow
 import androidx.core.view.setPadding
 import com.example.tptdl.LevelActivity
 import com.example.tptdl.gamelogic.gameboard.Cell
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
 
 class CellButton(val context : LevelActivity, row : TableRow, lenght : Int) : Observer {
-    //TODO que reciba context : AppCompatActivity
+
     private var button : ImageButton = ImageButton(context)
 
     private lateinit var cell : Cell
@@ -28,7 +29,7 @@ class CellButton(val context : LevelActivity, row : TableRow, lenght : Int) : Ob
         params.width = lenght
 
         button.setOnClickListener {
-            GlobalScope.launch { context.makeMovement(this@CellButton) }
+            CoroutineScope(Dispatchers.Default).launch { context.makeMovement(this@CellButton) }
         }
     }
 

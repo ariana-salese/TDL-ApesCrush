@@ -30,9 +30,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     var weatherService: WeatherService? = null
     var isCheckingForPermissions = false
     private lateinit var currentWeather: WeatherState
-    // Contains all the views
-    //TODO poner bien las bindings para acceder a las views
-    //private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -64,7 +61,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         weatherSelector.adapter = arrayAdapter
         weatherSelector.onItemSelectedListener = this
-
 
         connection = object : ServiceConnection {
             override fun onServiceDisconnected(componentName: ComponentName) {
@@ -111,9 +107,9 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         playButton.alpha = 0.5f
         mapButton.alpha = 0.5f
 
-        GlobalScope.launch (Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch{
 
-            val currentWeatherDeferred = GlobalScope.async { weatherService?.updateWeather() }
+            val currentWeatherDeferred = async { weatherService?.updateWeather() }
 
             val weatherResponse = currentWeatherDeferred.await()
 

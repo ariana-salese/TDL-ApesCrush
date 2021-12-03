@@ -14,7 +14,8 @@ import com.example.tptdl.gamelogic.gameboard.Line
 import com.example.tptdl.observers.CellButton
 import com.example.tptdl.observers.ScoreObserver
 import com.example.tptdl.weatherAPI.WeatherState
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import java.util.*
 import kotlin.properties.Delegates
@@ -107,7 +108,7 @@ class LevelActivity : AppCompatActivity(){
 
         clickedButton!!.changeBackground("#ffffff", 100)
 
-        val movementDone = GlobalScope.async { game.tryMovement(clickedButton!!.getCell(), button.getCell()) }
+        val movementDone = CoroutineScope(Dispatchers.Default).async { game.tryMovement(clickedButton!!.getCell(), button.getCell()) }
 
         disableCells()
 

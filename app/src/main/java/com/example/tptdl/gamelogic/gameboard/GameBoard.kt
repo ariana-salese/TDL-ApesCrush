@@ -26,7 +26,7 @@ class GameBoard(private val width : Int, private val height : Int, private val r
 
         this.updateRows()
 
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.Default).launch {
             this@GameBoard.checkForCombos(true)
             score.reset()
         }
@@ -271,114 +271,4 @@ class GameBoard(private val width : Int, private val height : Int, private val r
     fun doWeatherEvent() {
         ruleSet.weatherEvent(this)
     }
-
-    //                  TESTING //TODO borrar
-
-    fun printBoard() {
-
-        val maxLenght = 10 //Strawberry
-        val division = "-------------------------------------------------\n"
-        var board : String = division
-
-        for (i in 0 until height) {
-            for (j in 0 until width) {
-                val fruit = (((myColumns[j]).getCellAtIndex(i)).getCellValue()).toString()
-                var spaces = ""
-                for (k in 0 until maxLenght - fruit.length) spaces += " "
-
-                board += " $fruit$spaces|"
-            }
-            board += "\n"
-        }
-        board += division
-        println(board)
-    }
-
-    internal suspend fun repopulateBoardTESTING(initializing: Boolean, bombsToExplode : MutableList<Token>? = null) {  // internal function to test repopulateBoard()
-        if (!initializing) delay(500L)
-
-        dropAndRefill()
-        if (!initializing) delay(100L)
-
-        println("Board after repopulation:")
-        this.printBoard()
-
-        if (bombsToExplode != null) {
-            if (bombsToExplode.isNotEmpty()) {
-                this.searchForAndExplode(bombsToExplode)
-                if (!initializing) delay(500L)
-            }
-        }
-        println("Board after bombs are exploded:")
-
-        dropAndRefill()
-        if (!initializing) delay(100L)
-
-        println("Board after repopulation:")
-        this.printBoard()
-
-        if (!this.checkForCombosTESTING()) return
-    }
-
-    internal suspend fun checkForCombosTESTING(initializing : Boolean = false) : Boolean  {   // internal function to test checkForCombos() that adds a print after removal of combo'ed cells
-        val markedForRemoval : MutableList<Cell> = mutableListOf()
-        val bombsToExplode : MutableList<Token> = mutableListOf()
-        println("Board before combos identified and emptied:")
-        this.printBoard()
-        for (i in 0 until width) {
-            //myColumns[i].printLine()
-            println("THIS IS IN COMBOS: " + (myColumns[i].getAllCombos().toString()))
-            markedForRemoval.addAll(myColumns[i].getAllCombos())
-        }
-        for (i in 0 until height) {
-            //myRows[i].printLine()
-            println("THIS IS IN COMBOS: " + (myRows[i].getAllCombos().toString()))
-            markedForRemoval.addAll(myRows[i].getAllCombos())
-        }
-
-        //println("SHOULD HAVE ALL COMBOS" + markedForRemoval.toString())
-        if (markedForRemoval.isEmpty()) return false
-
-        bombsToExplode.addAll(this.checkForAdjacentExplosives(markedForRemoval))
-        markedForRemoval.forEach { it.pop(score) }
-        println("Board after combos identified and emptied:")
-        this.printBoard()
-        println("Repopulation after popped combos: ")
-        this.repopulateBoardTESTING(initializing, bombsToExplode)
-        return true
-    }
-
-    internal fun setCellTESTING(cellCoords : Pair<Int, Int>, cell : Cell) {    // forcefully sets a cell, for testing purposes only
-        val (x, y) = cellCoords
-        myColumns[x].setCellAtIndex(cell, y)
-        myRows[y].setCellAtIndex(cell, x)
-    }
-
-    //                  ???
-
-    // Switches the position of 2 cells in the GameBoard (Doesn't accept invalid switches).
-    private fun switchCells(selectedCellCoords: Pair<Int, Int>, cellToSwitchCoords: Pair<Int, Int>) {
-        val (xSelected, ySelected) = selectedCellCoords
-        val (xToSwitch, yToSwitch) = cellToSwitchCoords
-        val selectedCell = obtainCell(selectedCellCoords)
-        val cellToSwitch = obtainCell(cellToSwitchCoords)
-
-        if ((xSelected - xToSwitch) == 0) { // vertical switch
-            myColumns[xSelected].switchCells(ySelected, yToSwitch)
-            myRows[ySelected].setCellAtIndex(cellToSwitch, xSelected)
-            myRows[yToSwitch].setCellAtIndex(selectedCell, xSelected)
-        }
-        else if (ySelected - yToSwitch == 0) { // horizontal switch
-            myRows[ySelected].switchCells(xSelected, xToSwitch)
-            myColumns[xSelected].setCellAtIndex(cellToSwitch, ySelected)
-            myRows[yToSwitch].setCellAtIndex(selectedCell, ySelected)
-        }
-        else
-            throw Exception("Invalid switch")
-    } //TODO Repensar utilidad de este metodo @Alejo
-
-    /* Esto de arriba esta deprecado por unos cambios que hicimos para que quede mas comodo, aun asi
-    lo dejaria porque es un metodo que si se quisiese implementar de otra manera se podria usar
-    si eso lo movemos al fondo del archivo.
-     */
 }

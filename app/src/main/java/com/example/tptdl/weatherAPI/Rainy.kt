@@ -5,10 +5,7 @@ import android.widget.ImageView
 import com.example.tptdl.R
 import com.example.tptdl.gamelogic.gameboard.GameBoard
 import com.example.tptdl.gamelogic.tokens.Token
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 class Rainy : WeatherState() {
@@ -25,7 +22,7 @@ class Rainy : WeatherState() {
 
     override fun weatherEvent(gameBoard: GameBoard) {
 
-        GlobalScope.launch { starAnimation() }
+        CoroutineScope(Dispatchers.Default).launch { starAnimation() }
 
         runBlocking {
             delay(600L)

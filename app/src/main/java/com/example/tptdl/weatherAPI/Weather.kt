@@ -49,11 +49,11 @@ class Weather {
         return cleanWeatherData
     }
 
-    suspend fun fetchCurrent(location : Location?): WeatherState {
+    suspend fun fetchCurrent(location : Location?): WeatherState? {
 
-        if (location == null) return Normal()
+        if (location == null) return null
 
-        val cleanWeatherData = this.cleanWeatherData(this.getWeatherData(location)) ?: return Normal()
+        val cleanWeatherData = this.cleanWeatherData(this.getWeatherData(location)) ?: return null
 
         //Priorities: Rainy, Hot, Cold, Windy
 

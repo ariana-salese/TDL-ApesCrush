@@ -22,7 +22,7 @@ class WeatherService : Service() {
     private val binder: IBinder = WeatherServiceBinder()
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var currentWeather: WeatherState
+    private var currentWeather: WeatherState? = null
 
     override fun onCreate() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -32,14 +32,11 @@ class WeatherService : Service() {
         return binder
     }
 
-    fun getCurrentWeather() : WeatherState? { //TODO usar o eliminar
-        if(!this::currentWeather.isInitialized) return null
-        return currentWeather
-    }
-
+    /* Tries to get current location, if there is none, return null.
+    Otherwise, it returns the current weather. */
     suspend fun updateWeather() : WeatherState? {
 
-        val location = GlobalScope.async{ getLocation() }
+        val location = CoroutineScope(Dispatchers.IO).async{ getLocation() }
 
         if(location.await() == null) return null
 
@@ -48,7 +45,6 @@ class WeatherService : Service() {
         currentWeather = weather.fetchCurrent(location.await())
 
         return currentWeather
-
     }
 
     private suspend fun getLocation() : Location? {
