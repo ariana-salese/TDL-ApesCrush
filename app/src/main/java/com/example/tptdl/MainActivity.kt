@@ -68,6 +68,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             }
             override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
                 weatherService = (service as WeatherService.WeatherServiceBinder).service
+
                 if(!isCheckingForPermissions) updateCurrentWeather()
             }
         }
@@ -143,6 +144,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
         val selectedWeather = parent?.getItemAtPosition(position)
         if(selectedWeather == "Automatic"){
 
@@ -156,7 +158,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
                 weatherText.text = "- - -"
             }
 
-            updateCurrentWeather()
+            if(!isCheckingForPermissions) updateCurrentWeather()
         }
         else{
             currentWeather = selectedWeather as WeatherState
