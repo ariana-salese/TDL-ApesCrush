@@ -15,15 +15,16 @@ class Weather {
     private val APIKey: String = "cbe981f9e01863b0333a6fdbc475784f"
 
     //Obtains weather data from API (https://openweathermap.org)
-    private suspend fun getWeatherData(location: Location): String {
+    private fun getWeatherData(location: Location): String {
 
         var response = ""
 
-        withContext(Dispatchers.IO) {
-            runCatching{
-                response = URL("https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&units=metric&appid=$APIKey").readText(Charsets.UTF_8)
-            }.onFailure { println("Couldn't fetch current weather: ${it.message}") }
+        runCatching{
+            response = URL("https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&units=metric&appid=$APIKey").readText()
+        }.onFailure {
+            println("Couldn't fetch current weather: ${it.message}")
         }
+
         return response
     }
 
@@ -49,7 +50,7 @@ class Weather {
         return cleanWeatherData
     }
 
-    suspend fun fetchCurrent(location : Location?): WeatherState? {
+    fun fetchCurrent(location : Location?): WeatherState? {
 
         if (location == null) return null
 

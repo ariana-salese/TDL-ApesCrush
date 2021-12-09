@@ -1,9 +1,8 @@
 <resources>
-    <string name="app_name">TPTDL</string>
+    <string name="app_name">Apes Crush</string>
     <string name="map">Map</string>
     <string name="play">Play</string>
     <string name="apes_crush">Apes Crush</string>
-    <string name="music">Music</string>
     <string name="levelNumber1">1</string>
     <string name="levelNumber2">2</string>
     <string name="levelNumber3">3</string>

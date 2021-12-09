@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         playButton.alpha = 0.5f
         mapButton.alpha = 0.5f
 
-        CoroutineScope(Dispatchers.IO).launch{
+        CoroutineScope(Dispatchers.IO).launch {
 
             val currentWeatherDeferred = async { weatherService?.updateWeather() }
 

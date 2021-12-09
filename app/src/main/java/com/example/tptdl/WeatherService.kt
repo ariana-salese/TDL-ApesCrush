@@ -34,7 +34,7 @@ class WeatherService : Service() {
 
     /* Tries to get current location, if there is none, return null.
     Otherwise, it returns the current weather. */
-    suspend fun updateWeather() : WeatherState? {
+    suspend fun updateWeather() : WeatherState?  {
 
         val location = CoroutineScope(Dispatchers.IO).async{ getLocation() }
 
@@ -58,7 +58,7 @@ class WeatherService : Service() {
 
         val cancellationSource = CancellationTokenSource()
 
-        return try{
+        return try {
             Tasks.await(fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY,cancellationSource.token))
         } catch (e: SecurityException) {
             null
@@ -82,7 +82,7 @@ class WeatherService : Service() {
         return true
     }
 
-    inner class WeatherServiceBinder : Binder(){
+    inner class WeatherServiceBinder : Binder() {
         val service: WeatherService = this@WeatherService
     }
 }
