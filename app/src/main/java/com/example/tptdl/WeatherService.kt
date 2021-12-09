@@ -36,7 +36,7 @@ class WeatherService : Service() {
     Otherwise, it returns the current weather. */
     suspend fun updateWeather() : WeatherState?  {
 
-        val location = CoroutineScope(Dispatchers.IO).async{ getLocation() }
+        val location = CoroutineScope(Dispatchers.IO).async{ getCurrentLocation() }
 
         if(location.await() == null) return null
 
@@ -47,14 +47,9 @@ class WeatherService : Service() {
         return currentWeather
     }
 
-    private suspend fun getLocation() : Location? {
+    private fun getCurrentLocation() : Location? {
 
         if (!checkForPermissions()) return null
-
-        return withContext(Dispatchers.IO) { getCurrentLocation() }
-    }
-
-    private fun getCurrentLocation() : Location? {
 
         val cancellationSource = CancellationTokenSource()
 
