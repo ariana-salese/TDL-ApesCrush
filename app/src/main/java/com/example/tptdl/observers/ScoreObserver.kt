@@ -17,11 +17,11 @@ class ScoreObserver(val context : LevelActivity) : Observer {
 
     override fun update(o: Observable?, arg: Any?) {
         bar.progress = arg as Int
-        context.runOnUiThread { currentScore.text = arg.toString() }
+        currentScore.text = arg.toString()
     }
 
     fun setMax(winThreshold: Int) {
         bar.max = winThreshold
-        context.runOnUiThread { winThresholdScore.text = winThreshold.toString() }
+        winThresholdScore.text = winThreshold.toString()
     }
 }

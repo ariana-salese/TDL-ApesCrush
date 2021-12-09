@@ -22,7 +22,7 @@ class Weather {
         runCatching{
             response = URL("https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&units=metric&appid=$APIKey").readText()
         }.onFailure {
-            println("Couldn't fetch current weather: ${it.message}")
+            println("Couldn't fetch current weather: $it")
         }
 
         return response
