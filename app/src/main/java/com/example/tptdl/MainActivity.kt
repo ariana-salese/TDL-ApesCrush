@@ -110,9 +110,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
         CoroutineScope(Dispatchers.IO).launch {
 
-            val currentWeatherDeferred = async { weatherService?.updateWeather() }
-
-            val weatherResponse = currentWeatherDeferred.await()
+            var weatherResponse = weatherService?.updateWeather()
 
             currentWeather = if(weatherResponse == null) {
                 Snackbar.make(findViewById(R.id.imageView), "No weather information available, using default weather", BaseTransientBottomBar.LENGTH_SHORT).show()

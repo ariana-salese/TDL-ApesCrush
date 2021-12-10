@@ -34,24 +34,22 @@ class WeatherService : Service() {
 
     /* Tries to get current location, if there is none, return null.
     Otherwise, it returns the current weather. */
-    suspend fun updateWeather() : WeatherState?  {
+    fun updateWeather() : WeatherState?  {
 
-        val location = CoroutineScope(Dispatchers.IO).async{ getLocation() }
-
-        if(location.await() == null) return null
+        val location = getLocation() ?: return null
 
         val weather = Weather()
 
-        currentWeather = weather.fetchCurrent(location.await())
+        currentWeather = weather.fetchCurrent(location)
 
         return currentWeather
     }
 
-    private suspend fun getLocation() : Location? {
+    private fun getLocation() : Location? {
 
         if (!checkForPermissions()) return null
 
-        return withContext(Dispatchers.IO) { getCurrentLocation() }
+        return getCurrentLocation()
     }
 
     private fun getCurrentLocation() : Location? {
