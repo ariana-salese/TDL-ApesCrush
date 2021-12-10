@@ -36,7 +36,7 @@ class WeatherService : Service() {
     Otherwise, it returns the current weather. */
     fun updateWeather() : WeatherState?  {
 
-        val location = getLocation() ?: return null
+        val location = getCurrentLocation() ?: return null
 
         val weather = Weather()
 
@@ -45,23 +45,19 @@ class WeatherService : Service() {
         return currentWeather
     }
 
-    private fun getLocation() : Location? {
+    private fun getCurrentLocation() : Location? {
 
         if (!checkForPermissions()) return null
-
-        return getCurrentLocation()
-    }
-
-    private fun getCurrentLocation() : Location? {
 
         val cancellationSource = CancellationTokenSource()
 
         return try {
             Tasks.await(fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY,cancellationSource.token))
         } catch (e: SecurityException) {
+            println("Couldn't fetch current location: $e")
             null
         } catch (e: Exception) {
-            println(e)
+            println("Couldn't fetch current location: $e")
             null
         }
     }
